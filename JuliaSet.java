@@ -71,8 +71,11 @@ public class JuliaSet extends JPanel {
             f.setTitle("Julia Set");
             f.setResizable(false);
 
-            double a = 0;
-            double b = -0.8;
+            // defaults for testing
+            // double a = 0;
+            // double b = -0.8;
+            double a = Double.parseDouble(args[0]);
+            double b = Double.parseDouble(args[1]);
             // while(a < 0 && b > 0) {
             //
             //   f.add(new JuliaSet(a,b), BorderLayout.CENTER);
