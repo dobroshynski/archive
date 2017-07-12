@@ -3,11 +3,11 @@ const router = express.Router();
 const request = require('request');
 
 // load and read the config file
-const fs = require('fs');
-const path = require('path');
-const configFn = path.join(__dirname, '../config.json');
-const data = fs.readFileSync(configFn);
-const configurations = JSON.parse(data);
+// const fs = require('fs');
+// const path = require('path');
+// const configFn = path.join(__dirname, '../config.json');
+// const data = fs.readFileSync(configFn);
+// const configurations = JSON.parse(data);
 
 var webhookUri = process.env.WEBHOOK_URI;
 

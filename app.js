@@ -10,7 +10,7 @@ var index = require('./routes/index');
 var app = express();
 
 // tunneling with ngrok to test hooks while on localhost
-var testing = true;
+var testing = false;
 if(testing) {
   var ngrok = require('ngrok');
 
