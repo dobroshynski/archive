@@ -9,7 +9,7 @@ const configFn = path.join(__dirname, '../config.json');
 const data = fs.readFileSync(configFn);
 const configurations = JSON.parse(data);
 
-var webhookUri = configurations.webhookUri;
+var webhookUri = process.env.WEBHOOK_URI;
 
 const debug = false;
 
@@ -23,7 +23,7 @@ router.get('/user-list', function(req,res) {
     method: 'POST',
     uri: 'https://slack.com/api/users.list',
     form: {
-      token: configurations.userListToken,
+      token: process.env.USER_LIST_TOKEN,
     },
     json: true,
     headers: {
@@ -49,13 +49,13 @@ router.post('/events', function(req,res) {
 
   if (payload.type === 'url_verification') {
     res.send(payload.challenge);
-  } else if (payload.type === 'event_callback' && payload.event.subtype !== "bot_message" && payload.event.user === configurations.angryReacterUserID) {
+  } else if (payload.type === 'event_callback' && payload.event.subtype !== "bot_message" && payload.event.user === process.env.ANGRY_REACTER_USER_ID) {
 
     const options = {
       method: 'POST',
       uri: 'https://slack.com/api/reactions.add',
       form: {
-        token: configurations.botAuthToken,
+        token: process.env.BOT_AUTH_TOKEN,
         name: "fb_angry",
         channel: payload.event.channel,
         timestamp: payload.event.ts,
