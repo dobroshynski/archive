@@ -68,8 +68,21 @@ function cleanupEvents(events) {
       filtered.push(evnt);
     }
   });
+
+  events.forEach(function(evnt) {
+    if(evnt.action === 'deleted') {
+      var ret = [];
+      ret.push(evnt);
+      filtered = ret;
+    }
+  });
   return filtered;
 }
+
+router.post('/interactive-messages-endpoint', function(req,res) {
+  console.log("Slack Interactive Messages endpoint hit");
+  console.log(req.body);
+});
 
 router.post('/asana-webhook', function(req,res) {
   console.log("ASANA AUTH WEBHOOK HIT");
@@ -115,7 +128,7 @@ router.post('/asana-webhook', function(req,res) {
           console.log("current user is: " + user.profile.first_name + " " + user.profile.last_name);
         }
       });
-      
+
       var events = cleanupEvents(req.body.events);
 
       events.forEach(function(event){
@@ -131,19 +144,28 @@ router.post('/asana-webhook', function(req,res) {
           };
           request(options, function(error, response, body) {
             var dataObj = JSON.parse(body);
+            var headerText = "Asana:";
             if(event.action === 'changed') {
               console.log("An Asana task assigned to " + dataObj.data.name + " has been changed.");
+
+              var link = "https://app.asana.com/0/" + myTasksID + "/" + event.resource;
+              var jsonMessage = [{
+                "text": "A task assigned to you has been changed. <" + link + "|View Task>",
+                "fallback": "Asana Bot cannot be loaded",
+                "color": "#10579d",
+                "attachment_type": "default"
+              }];
 
               const options = {
                 method: 'POST',
                 uri: 'https://slack.com/api/chat.postMessage',
                 form: {
                   token: process.env.BOT_AUTH_TOKEN,
-                  text: ("An Asana task assigned to you has been changed."),
+                  text: headerText,
+                  attachments: JSON.stringify(jsonMessage),
                   channel: currentUser.id, // set this to ID of person receiving the message
                   as_user: true
                 },
-                json: true,
                 headers: {
                   'content-type': 'application/x-www-form-urlencoded'
                 }
@@ -153,12 +175,21 @@ router.post('/asana-webhook', function(req,res) {
             } else if(event.action === 'added') {
                 console.log("A new Asana task has been added and assigned to " + dataObj.data.name + ".");
 
+                var link = "https://app.asana.com/0/" + myTasksID + "/" + event.resource;
+                var jsonMessage = [{
+                  "text": "A new task has been added and assigned to you. <" + link + "|View Task>",
+                  "fallback": "Asana Bot cannot be loaded",
+                  "color": "#10579d",
+                  "attachment_type": "default"
+                }];
+
                 const options = {
                   method: 'POST',
                   uri: 'https://slack.com/api/chat.postMessage',
                   form: {
                     token: process.env.BOT_AUTH_TOKEN,
-                    text: ("A new Asana task has been added and assigned to you."),
+                    text: headerText,
+                    attachments: JSON.stringify(jsonMessage),
                     channel: currentUser.id, // set this to ID of person receiving the message
                     as_user: true
                   },
@@ -172,12 +203,21 @@ router.post('/asana-webhook', function(req,res) {
             } else if(event.action === 'deleted') {
                 console.log("An Asana task assigned to " + dataObj.data.name + " has been deleted.");
 
+                var link = "https://app.asana.com/0/" + myTasksID + "/" + event.resource;
+                var jsonMessage = [{
+                  "text": "A task assigned to you has been deleted. <" + link + "|View Task>",
+                  "fallback": "Asana Bot cannot be loaded",
+                  "color": "#10579d",
+                  "attachment_type": "default"
+                }];
+
                 const options = {
                   method: 'POST',
                   uri: 'https://slack.com/api/chat.postMessage',
                   form: {
                     token: process.env.BOT_AUTH_TOKEN,
-                    text: ("An Asana task assigned to you has been deleted."),
+                    text: headerText,
+                    attachments: JSON.stringify(jsonMessage),
                     channel: currentUser.id, // set this to ID of person receiving the message
                     as_user: true
                   },
