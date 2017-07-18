@@ -32,9 +32,6 @@ if(testing) {
 
 // route handler for Slack's Event Notifications sent as POST requests to verify endpoint
 router.post('/events-auth', function(req,res) {
-  if(debug) {
-    console.log("ENDPOINT HIT");
-  }
   const payload = req.body;
 
   if (payload.type === 'url_verification') {
@@ -51,6 +48,27 @@ function createResponse(authHeader) {
   Content-Type: application/json
   X-Hook-Secret: ${authHeader}
   `;
+}
+
+function cleanupEvents(events) {
+  var didSeeUpdateEvent = false;
+  var didSeeCreateEvent = false;
+  var didSeeDeleteEvent = false;
+  var filtered = [];
+  events.forEach(function(evnt) {
+    var type = evnt.action;
+    if(type === 'changed' && !didSeeUpdateEvent) {
+      didSeeUpdateEvent = true;
+      filtered.push(evnt);
+    } else if(type === 'added' && !didSeeCreateEvent) {
+      didSeeCreateEvent = true;
+      filtered.push(evnt);
+    } else if(type === 'deleted' && !didSeeDeleteEvent) {
+      didSeeDeleteEvent = true;
+      filtered.push(evnt);
+    }
+  });
+  return filtered;
 }
 
 router.post('/asana-webhook', function(req,res) {
@@ -72,40 +90,108 @@ router.post('/asana-webhook', function(req,res) {
       console.log(signatureHeader);
       console.log(req.body);
     }
-    var events = req.body.events;
 
-    events.forEach(function(event){
-      if(event.type === 'task' && event.user) {
-        var userID = event.user;
-        var headers = {
-          'Authorization': 'Bearer ' + asanaAccessToken,
-          'content-type': 'application/x-www-form-urlencoded'
-        };
-        var options = {
-          url: 'https://app.asana.com/api/1.0/users/' + userID,
-          headers: headers
-        };
+    // first fetch a list of users
+    const options = {
+      method: 'POST',
+      uri: 'https://slack.com/api/users.list',
+      form: {
+        token: process.env.USER_LIST_TOKEN,
+      },
+      json: true,
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded'
+      }
+    };
+    request(options, function (error, response, body) {
+      // console.log(body.members);
+      console.log(typeof body.members);
+      var users = body.members;
+      var currentUser = {};
+      var currentUserID = process.env.CURRENT_USER_ID;
+      users.forEach(function(user){
+        if(user.id === currentUserID) {
+          currentUser = user;
+          console.log("current user is: " + user.profile.first_name + " " + user.profile.last_name);
+        }
+      });
+      
+      var events = cleanupEvents(req.body.events);
 
-        if(event.action === 'changed') {
-          // a task assigned to the user has been changed
+      events.forEach(function(event){
+        if(event.type === 'task' && event.user) {
+          var userID = event.user;
+          var headers = {
+            'Authorization': 'Bearer ' + asanaAccessToken,
+            'content-type': 'application/x-www-form-urlencoded'
+          };
+          var options = {
+            url: 'https://app.asana.com/api/1.0/users/' + userID,
+            headers: headers
+          };
           request(options, function(error, response, body) {
             var dataObj = JSON.parse(body);
-            console.log("A task assigned to " + dataObj.data.name + " has been changed.");
-          });
-        } else if(event.action === 'added') {
-          // a task has been added and assigned to the user
-          request(options, function(error, response, body) {
-            var dataObj = JSON.parse(body);
-            console.log("A new task has been added and assigned to " + dataObj.data.name + ".");
-          });
-        } else if(event.action === 'deleted') {
-          // a task assined to the user has been deleted
-          request(options, function(error, response, body) {
-            var dataObj = JSON.parse(body);
-            console.log("A task assigned to " + dataObj.data.name + " has been deleted.");
+            if(event.action === 'changed') {
+              console.log("An Asana task assigned to " + dataObj.data.name + " has been changed.");
+
+              const options = {
+                method: 'POST',
+                uri: 'https://slack.com/api/chat.postMessage',
+                form: {
+                  token: process.env.BOT_AUTH_TOKEN,
+                  text: ("An Asana task assigned to you has been changed."),
+                  channel: currentUser.id, // set this to ID of person receiving the message
+                  as_user: true
+                },
+                json: true,
+                headers: {
+                  'content-type': 'application/x-www-form-urlencoded'
+                }
+              };
+
+              request(options);
+            } else if(event.action === 'added') {
+                console.log("A new Asana task has been added and assigned to " + dataObj.data.name + ".");
+
+                const options = {
+                  method: 'POST',
+                  uri: 'https://slack.com/api/chat.postMessage',
+                  form: {
+                    token: process.env.BOT_AUTH_TOKEN,
+                    text: ("A new Asana task has been added and assigned to you."),
+                    channel: currentUser.id, // set this to ID of person receiving the message
+                    as_user: true
+                  },
+                  json: true,
+                  headers: {
+                    'content-type': 'application/x-www-form-urlencoded'
+                  }
+                };
+
+                request(options);
+            } else if(event.action === 'deleted') {
+                console.log("An Asana task assigned to " + dataObj.data.name + " has been deleted.");
+
+                const options = {
+                  method: 'POST',
+                  uri: 'https://slack.com/api/chat.postMessage',
+                  form: {
+                    token: process.env.BOT_AUTH_TOKEN,
+                    text: ("An Asana task assigned to you has been deleted."),
+                    channel: currentUser.id, // set this to ID of person receiving the message
+                    as_user: true
+                  },
+                  json: true,
+                  headers: {
+                    'content-type': 'application/x-www-form-urlencoded'
+                  }
+                };
+
+                request(options);
+            }
           });
         }
-      }
+      });
     });
     res.end();
   }
