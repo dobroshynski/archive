@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 
 var webhooks = require('./routes/webhooks');
 
+require('dotenv').config();
+
 var app = express();
 
 app.use(logger('dev'));

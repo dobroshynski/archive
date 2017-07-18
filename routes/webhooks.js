@@ -15,6 +15,9 @@ const newBotID = configurations.newBotID;
 const projectID = configurations.projectID;
 const myTasksID = configurations.myTasksID;
 
+const webhookUri = process.env.WEBHOOK_URI;
+
+
 var tunnelUrl = '';
 
 var testing = true;
@@ -26,6 +29,18 @@ if(testing) {
     tunnelUrl = url;
   });
 }
+
+// route handler for Slack's Event Notifications sent as POST requests to verify endpoint
+router.post('/events-auth', function(req,res) {
+  if(debug) {
+    console.log("ENDPOINT HIT");
+  }
+  const payload = req.body;
+
+  if (payload.type === 'url_verification') {
+    res.send(payload.challenge);
+  }
+});
 
 router.get('/', function(req,res) {
   res.sendStatus(200);
