@@ -9,6 +9,8 @@ var webhooks = require('./src/webhooks');
 
 var server = express();
 
+require('dotenv').config()
+
 server.use(logger('dev'));
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: false }));
