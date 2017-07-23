@@ -5,4 +5,8 @@ router.get('/', function(req, res, next) {
   res.sendStatus(200);
 });
 
+router.get('/messenger-webhook', function(req, res, next) {
+  res.sendStatus(200);
+});
+
 module.exports = router;
