@@ -20,6 +20,8 @@ router.get('/messenger-webhook', function(req, res) {
 
 // listen for messages
 router.post('/messenger-webhook', function(req, res) {
+  console.log("webhook POST hit");
+  console.log(req.payload)
   var data = req.body;
 
   if(data.object === 'page') {
@@ -30,6 +32,10 @@ router.post('/messenger-webhook', function(req, res) {
       entry.messaging.forEach(function(event) {
         if(event.message) {
           receivedMessage(event);
+        } else if(event.postback) {
+          console.log("received postback");
+          console.log("payload:");
+          console.log(event.postback.payload);
         } else {
           console.log("Webhook received unknown event: ", event);
         }
