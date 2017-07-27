@@ -3,6 +3,11 @@ var router = express.Router();
 
 const request = require('request');
 
+// global variables to track some basic state
+var inProgressOfGenerating = false;
+var blurbsReceived = 0;
+var blurbsToGoInMeme = [];
+
 router.get('/', function(req, res, next) {
   res.sendStatus(200);
 });
@@ -60,9 +65,10 @@ router.post('/messenger-webhook', function(req, res) {
 });
 
 function sendMemeConfirmMessage(recipientId, memeType) {
-  if(memeType === "EXPANDING_BRAIN_MEME") {
+  if(memeType === "EXPANDING_BRAIN_MEME" && !inProgressOfGenerating) {
+    inProgressOfGenerating = true;
     var messageText = "Cool, you've picked the Expanding Brain Meme template";
-    var followUpMessage = "Please message the 1st blurb of text for your meme";
+    var followUpMessage = "Please message the 1/4 blurb of text for your meme";
     console.log("sending confirm message...");
     sendTextMessage(recipientId, messageText, followUpMessage);
   }
@@ -165,7 +171,53 @@ function receivedMessage(evnt) {
   var messageAttachments = message.attachments;
 
   if(messageText) {
-    sendTextMessage(senderID, messageText);
+    if(!inProgressOfGenerating) {
+      // echo back the text for now
+      sendTextMessage(senderID, messageText);
+    } else {
+      // currently in progress of generating a meme and received some text
+      if(blurbsReceived === 0) {
+        blurbsReceived++;
+        blurbsToGoInMeme.push(messageText);
+        console.log("added text to array; blurbs recieved: " + blurbsReceived);
+
+        var messageText = "Please message the 2/4 blurb of text for your meme";
+        console.log("sending message asking for next blurb...");
+        sendTextMessage(senderID, messageText);
+      } else if(blurbsReceived === 1) {
+        blurbsReceived++;
+        blurbsToGoInMeme.push(messageText);
+        console.log("added text to array; blurbs recieved: " + blurbsReceived);
+
+        var messageText = "Please message the 3/4 blurb of text for your meme";
+        console.log("sending message asking for next blurb...");
+        sendTextMessage(senderID, messageText);
+      } else if(blurbsReceived === 2) {
+        blurbsReceived++;
+        blurbsToGoInMeme.push(messageText);
+        console.log("added text to array; blurbs recieved: " + blurbsReceived);
+
+        var messageText = "Please message the 4/4 blurb of text for your meme";
+        console.log("sending message asking for next blurb...");
+        sendTextMessage(senderID, messageText);
+      } else if(blurbsReceived === 3) {
+        // got the 4th blurb
+        blurbsReceived++;
+        blurbsToGoInMeme.push(messageText);
+        console.log("added text to array; blurbs recieved: " + blurbsReceived);
+        console.log("array currently:");
+        console.log(blurbsToGoInMeme);
+
+        inProgressOfGenerating = false;
+        blurbsReceived = 0;
+
+        // send back the meme here
+        // placeholder message for now
+
+        var messageText = "Here's your meme:";
+        sendTextMessage(senderID, messageText);
+      }
+    }
   } else if(messageAttachments) {
     console.log("received message with attachments");
   }
