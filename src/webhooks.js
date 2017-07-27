@@ -35,7 +35,17 @@ router.post('/messenger-webhook', function(req, res) {
         } else if(event.postback) {
           console.log("received postback");
           console.log("payload:");
-          console.log(event.postback.payload);
+          var payload = event.postback.payload;
+          console.log(payload);
+
+          if(payload === "GET_MEME_GENERATION_STARTED_PAYLOAD") {
+            // send a welcome message
+            sendWelcomeMessage(event.sender.id);
+          } else if(payload === "EXPANDING_BRAIN_MEME_PAYLOAD") {
+            // set the meme chosen to be Expanding Brain Meme
+            console.log("user picked to generate an expanding brain meme");
+            sendMemeConfirmMessage(event.sender.id, "EXPANDING_BRAIN_MEME");
+          }
         } else {
           console.log("Webhook received unknown event: ", event);
         }
@@ -44,6 +54,20 @@ router.post('/messenger-webhook', function(req, res) {
     res.sendStatus(200);
   }
 });
+
+function sendMemeConfirmMessage(recipientId, memeType) {
+  if(memeType === "EXPANDING_BRAIN_MEME") {
+    var messageText = "Cool, you've picked the Expanding Brain Meme template";
+    console.log("sending confirm message...");
+    sendTextMessage(recipientId, messageText);
+  }
+}
+
+function sendWelcomeMessage(recipientId) {
+  var messageText = "Welcome! Please choose a type of meme you would like to generate from the in-chat menu";
+  console.log("sending welcome message...");
+  sendTextMessage(recipientId, messageText);
+}
 
 function sendTextMessage(recipientId, messageText) {
   var messageData = {
