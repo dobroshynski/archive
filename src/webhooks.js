@@ -31,7 +31,11 @@ router.post('/messenger-webhook', function(req, res) {
 
       entry.messaging.forEach(function(event) {
         if(event.message) {
-          receivedMessage(event);
+          if(event.message.quick_reply) {
+            receivedQuickReplyMessage(event);
+          } else {
+            receivedMessage(event);
+          }
         } else if(event.postback) {
           console.log("received postback");
           console.log("payload:");
@@ -66,7 +70,26 @@ function sendMemeConfirmMessage(recipientId, memeType) {
 function sendWelcomeMessage(recipientId) {
   var messageText = "Welcome! Please choose a type of meme you would like to generate from the in-chat menu";
   console.log("sending welcome message...");
-  sendTextMessage(recipientId, messageText);
+  sendWelcomeTextMessage(recipientId, messageText);
+}
+
+function sendWelcomeTextMessage(recipientId, messageText) {
+  var messageData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      text: messageText,
+      quick_replies:[
+            {
+              content_type:"text",
+              title:"Expanding Brain Meme",
+              payload:"EXPANDING_BRAIN_MEME_QUICK_REPLY_PAYLOAD"
+            }
+          ]
+    }
+  };
+  sendAPICall(messageData);
 }
 
 function sendTextMessage(recipientId, messageText) {
@@ -100,6 +123,15 @@ function sendAPICall(messageData) {
       console.error(error);
     }
   });
+}
+
+function receivedQuickReplyMessage(evnt) {
+  var quickReply = evnt.message.quick_reply;
+  console.log("received message from quick reply");
+  if(quickReply.payload === "EXPANDING_BRAIN_MEME_QUICK_REPLY_PAYLOAD") {
+    console.log("user chose expanding brain meme template from quick reply...");
+    sendMemeConfirmMessage(evnt.sender.id, "EXPANDING_BRAIN_MEME");
+  }
 }
 
 function receivedMessage(evnt) {
