@@ -62,8 +62,9 @@ router.post('/messenger-webhook', function(req, res) {
 function sendMemeConfirmMessage(recipientId, memeType) {
   if(memeType === "EXPANDING_BRAIN_MEME") {
     var messageText = "Cool, you've picked the Expanding Brain Meme template";
+    var followUpMessage = "Please message the 1st blurb of text for your meme";
     console.log("sending confirm message...");
-    sendTextMessage(recipientId, messageText);
+    sendTextMessage(recipientId, messageText, followUpMessage);
   }
 }
 
@@ -92,7 +93,7 @@ function sendWelcomeTextMessage(recipientId, messageText) {
   sendAPICall(messageData);
 }
 
-function sendTextMessage(recipientId, messageText) {
+function sendTextMessage(recipientId, messageText, followUpMessage) {
   var messageData = {
     recipient: {
       id: recipientId
@@ -101,10 +102,22 @@ function sendTextMessage(recipientId, messageText) {
       text: messageText
     }
   };
-  sendAPICall(messageData);
+  if(followUpMessage) {
+    var followUpMessageData = {
+      recipient: {
+        id: recipientId
+      },
+      message: {
+        text: followUpMessage
+      }
+    };
+    sendAPICall(messageData, followUpMessageData);
+  } else {
+    sendAPICall(messageData);
+  }
 }
 
-function sendAPICall(messageData) {
+function sendAPICall(messageData, followUpMessageData) {
   request({
     uri: 'https://graph.facebook.com/v2.6/me/messages',
     qs: { access_token: process.env.FB_PAGE_ACCESS_TOKEN },
@@ -117,6 +130,10 @@ function sendAPICall(messageData) {
       var messageId = body.message_id;
 
       console.log("Successfully sent message with id %s to recipient %s", messageId, recipientId);
+
+      if(followUpMessageData) {
+        sendAPICall(followUpMessageData);
+      }
     } else {
       console.error("Unable to send message.");
       console.error(response);
