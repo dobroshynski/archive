@@ -2,15 +2,79 @@ var express = require('express');
 var router = express.Router();
 var path = require('path');
 
+var AWS = require('aws-sdk');
+const fs = require('fs');
+
 const request = require('request');
 
-// global variables to track some basic state
+// global variables to track some basic state for testing
 var inProgressOfGenerating = false;
 var blurbsReceived = 0;
 var blurbsToGoInMeme = [];
+var idUser;
 
 router.get('/', function(req, res, next) {
   res.sendStatus(200);
+});
+
+router.post('/handle/image/data', function(req, res) {
+  console.log("got buffered data on server side");
+
+  var body = req.body;
+  var base64Data = req.body.data.replace(/^data:image\/png;base64,/, "");
+
+  var fileName = "web/generated/messenger-memegenerator-" + Date.now() + ".png";
+  var AWSfileName = fileName.substring(14);
+  console.log("AWS file name: " + AWSfileName);
+
+  fs.writeFile(fileName, base64Data, 'base64', function(err) {
+    if(err) {
+      console.log(err);
+    } else {
+      console.log("wrote file to disk successfully!");
+
+      AWS.config.update({ accessKeyId: process.env.AWS_ACCESS_KEY_ID, secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY });
+
+      fs.readFile(fileName, function (err, data) {
+        if (err) { throw err; }
+
+        var s3 = new AWS.S3();
+        s3.putObject({
+          Bucket: process.env.AWS_BUCKET_NAME,
+          Key: AWSfileName,
+          Body: data
+        }, function(err, response) {
+          if(err) {
+            throw err;
+          } else {
+            console.log('Successfully uploaded file to AWS.');
+            var fileURLonAWS = 'https://s3.amazonaws.com/' + process.env.AWS_BUCKET_NAME + '/' + fileName;
+            console.log("stored on AWS at: " + fileURLonAWS);
+
+            // delete the file from local folder
+            fs.unlink(fileName, (err) => {
+              if (err) throw err;
+              console.log('successfully deleted ' + fileName + ' from local storage');
+
+              // respond back with data
+              sendMemeBackToUserAndReset(fileURLonAWS, idUser);
+              res.sendStatus(200);
+            });
+          }
+        });
+      });
+    }
+  });
+});
+
+router.get('/get/data', function(req,res) {
+  var obj = {list: blurbsToGoInMeme};
+  var JSONobj = JSON.stringify(obj);
+  res.send(JSONobj);
+});
+
+router.get('/generate/meme', function(req, res) {
+  res.sendFile(path.join(__dirname, '../web', 'meme-generate.html'));
 });
 
 // authenticate FB messenger webooks
@@ -22,10 +86,6 @@ router.get('/messenger-webhook', function(req, res) {
     console.error("Failed validation. Make sure the validation tokens match.");
     res.sendStatus(403);
   }
-});
-
-router.get('/generate/meme', function(req, res) {
-  res.sendFile(path.join(__dirname, '../web', 'meme-generate.html'));
 });
 
 // listen for messages
@@ -68,6 +128,43 @@ router.post('/messenger-webhook', function(req, res) {
     res.sendStatus(200);
   }
 });
+
+// send the generated meme to the user and reset the state
+function sendMemeBackToUserAndReset(fileURL, senderID) {
+  // reset state
+  inProgressOfGenerating = false;
+  blurbsReceived = 0;
+  blurbsToGoInMeme = [];
+
+  sendMeme(fileURL, senderID);
+}
+
+function sendMeme(fileURL, recipientId) {
+  console.log("sending meme back...");
+  var messageText = "Here is your meme!";
+  var textData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      text: messageText
+    }
+  };
+  var messageData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      attachment:{
+        type:"image",
+        payload:{
+          url:fileURL
+        }
+      }
+    }
+  };
+  sendAPICall(textData, messageData); // sending message first and attachment after
+}
 
 function sendMemeConfirmMessage(recipientId, memeType) {
   if(memeType === "EXPANDING_BRAIN_MEME" && !inProgressOfGenerating) {
@@ -213,16 +310,8 @@ function receivedMessage(evnt) {
         console.log("array currently:");
         console.log(blurbsToGoInMeme);
 
-        // res.redirect('/generate/meme'); // redirect to run a meme generation script
-
-        inProgressOfGenerating = false;
-        blurbsReceived = 0;
-
-        // send back the meme here
-        // placeholder message for now
-
-        var messageText = "Here's your meme:";
-        sendTextMessage(senderID, messageText);
+        idUser = senderID;
+        res.redirect('/generate/meme'); // redirect to run a meme generation script
       }
     }
   } else if(messageAttachments) {

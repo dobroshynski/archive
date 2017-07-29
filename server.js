@@ -11,6 +11,10 @@ var server = express();
 
 require('dotenv').config()
 
+server.use(bodyParser.json({limit: '50mb'}));
+server.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+server.use(bodyParser.text({type : 'application/text-enriched', limit: '50mb'}));
+
 server.use(logger('dev'));
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: false }));
