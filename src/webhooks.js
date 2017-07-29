@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var path = require('path');
 
 const request = require('request');
 
@@ -21,6 +22,10 @@ router.get('/messenger-webhook', function(req, res) {
     console.error("Failed validation. Make sure the validation tokens match.");
     res.sendStatus(403);
   }
+});
+
+router.get('/generate/meme', function(req, res) {
+  res.sendFile(path.join(__dirname, '../web', 'meme-generate.html'));
 });
 
 // listen for messages
@@ -207,6 +212,8 @@ function receivedMessage(evnt) {
         console.log("added text to array; blurbs recieved: " + blurbsReceived);
         console.log("array currently:");
         console.log(blurbsToGoInMeme);
+
+        // res.redirect('/generate/meme'); // redirect to run a meme generation script
 
         inProgressOfGenerating = false;
         blurbsReceived = 0;
