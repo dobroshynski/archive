@@ -23,7 +23,7 @@ router.post('/handle/image/data', function(req, res) {
   var body = req.body;
   var base64Data = req.body.data.replace(/^data:image\/png;base64,/, "");
 
-  var fileName = "web/generated/messenger-memegenerator-" + Date.now() + ".png";
+  var fileName = "/generated/messenger-memegenerator-" + Date.now() + ".png";
   var AWSfileName = fileName.substring(14);
   console.log("AWS file name: " + AWSfileName);
 
@@ -74,6 +74,7 @@ router.get('/get/data', function(req,res) {
 });
 
 router.get('/generate/meme', function(req, res) {
+  console.log("redirected.");
   res.sendFile(path.join(__dirname, '../web', 'meme-generate.html'));
 });
 
@@ -311,7 +312,8 @@ function receivedMessage(evnt) {
         console.log(blurbsToGoInMeme);
 
         idUser = senderID;
-        res.redirect('/generate/meme'); // redirect to run a meme generation script
+        console.log("sending file");
+        res.sendFile(path.join(__dirname, '../web', 'meme-generate.html'));
       }
     }
   } else if(messageAttachments) {
