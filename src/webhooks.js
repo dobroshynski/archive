@@ -23,7 +23,7 @@ router.post('/handle/image/data', function(req, res) {
   var body = req.body;
   var base64Data = req.body.data.replace(/^data:image\/png;base64,/, "");
 
-  var fileName = "/generated/messenger-memegenerator-" + Date.now() + ".png";
+  var fileName = "/app/web/generated/messenger-memegenerator-" + Date.now() + ".png";
   var AWSfileName = fileName.substring(14);
   console.log("AWS file name: " + AWSfileName);
 
