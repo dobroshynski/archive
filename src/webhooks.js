@@ -42,13 +42,14 @@ router.post('/handle/image/data', function(req, res) {
         s3.putObject({
           Bucket: process.env.AWS_BUCKET_NAME,
           Key: AWSfileName,
+          ContentType: 'image/jpeg',
           Body: data
         }, function(err, response) {
           if(err) {
             throw err;
           } else {
             console.log('Successfully uploaded file to AWS.');
-            var fileURLonAWS = 'https://s3.amazonaws.com/' + process.env.AWS_BUCKET_NAME + '/' + fileName;
+            var fileURLonAWS = 'https://s3.amazonaws.com/' + process.env.AWS_BUCKET_NAME + '/' + AWSfileName;
             console.log("stored on AWS at: " + fileURLonAWS);
 
             // delete the file from local folder
