@@ -24,7 +24,7 @@ router.post('/handle/image/data', function(req, res) {
   var base64Data = req.body.data.replace(/^data:image\/png;base64,/, "");
 
   var fileName = "/app/web/generated/messenger-memegenerator-" + Date.now() + ".png";
-  var AWSfileName = fileName.substring(14);
+  var AWSfileName = fileName.substring(19);
   console.log("AWS file name: " + AWSfileName);
 
   fs.writeFile(fileName, base64Data, 'base64', function(err) {
@@ -59,7 +59,6 @@ router.post('/handle/image/data', function(req, res) {
 
               // respond back with data
               sendMemeBackToUserAndReset(fileURLonAWS, idUser);
-              res.sendStatus(200);
             });
           }
         });
