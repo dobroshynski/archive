@@ -138,6 +138,9 @@ function sendMemeBackToUserAndReset(fileURL, senderID) {
   blurbsReceived = 0;
   blurbsToGoInMeme = [];
 
+  var messageText = "Here is your meme!";
+  sendTextMessage(senderID, messageText);
+
   sendMeme(fileURL, senderID);
 }
 
@@ -165,7 +168,7 @@ function sendMeme(fileURL, recipientId) {
       }
     }
   };
-  sendAPICall(textData, messageData); // sending message first and attachment after
+  sendAPICall(messageData); // sending message first and attachment after
 }
 
 function sendMemeConfirmMessage(recipientId, memeType) {
@@ -325,7 +328,6 @@ function receivedMessage(evnt) {
         program.stderr.pipe(process.stderr);
         program.on('exit', code => {
           console.log("node: phantom script exited..." + code);
-          res.sendStatus(200);
         });
       }
     }
