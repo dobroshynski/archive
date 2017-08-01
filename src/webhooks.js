@@ -319,12 +319,13 @@ function receivedMessage(evnt) {
         var phantomURL = process.env.PHANTOM_URL;
 
         var phantomjs = require('phantomjs-prebuilt');
-        var program = phantomjs.exec('phantom-script.js', phantomURL);
+        var program = phantomjs.exec('/app/src/phantom-script.js', phantomURL);
 
         program.stdout.pipe(process.stdout);
         program.stderr.pipe(process.stderr);
         program.on('exit', code => {
           console.log("node: phantom script exited..." + code);
+          res.sendStatus(200);
         });
       }
     }
