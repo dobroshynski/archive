@@ -73,8 +73,9 @@ router.get('/get/data', function(req,res) {
   res.send(JSONobj);
 });
 
+// this endpoint gets called by the phantomjs page.open;
 router.get('/generate/meme', function(req, res) {
-  console.log("redirected.");
+  console.log("redirected from phantomjs...");
   res.sendFile(path.join(__dirname, '../web', 'meme-generate.html'));
 });
 
@@ -312,8 +313,19 @@ function receivedMessage(evnt) {
         console.log(blurbsToGoInMeme);
 
         idUser = senderID;
-        console.log("sending file");
-        res.sendFile(path.join(__dirname, '../web', 'meme-generate.html'));
+
+        // open a headless browser window here and generate the meme
+
+        var phantomURL = process.env.PHANTOM_URL;
+
+        var phantomjs = require('phantomjs-prebuilt');
+        var program = phantomjs.exec('phantom-script.js', phantomURL);
+
+        program.stdout.pipe(process.stdout);
+        program.stderr.pipe(process.stderr);
+        program.on('exit', code => {
+          console.log("node: phantom script exited..." + code);
+        });
       }
     }
   } else if(messageAttachments) {
