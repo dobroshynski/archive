@@ -8,10 +8,22 @@ const fs = require('fs');
 const request = require('request');
 
 // global variables to track some basic state for testing
-var inProgressOfGenerating = false;
+var inProgressOfGenerating = false; // TODO change this variable usage to reflect whether or not there is at least one MemeGenerated object currently active
 var blurbsReceived = 0;
 var blurbsToGoInMeme = [];
 var idUser;
+
+var memes = {}; // dictionary/object of MemeGenerated objects
+
+class MemeGenerated {
+  constructor(id, idUser) {
+    this.id = id;
+    this.idUser = idUser;
+    this.blurbsToGoInMeme = [];
+    this.blurbsReceived = 0
+    this.inProgressOfGeneratingMeme = true
+  }
+}
 
 router.get('/', function(req, res, next) {
   res.sendStatus(200);
