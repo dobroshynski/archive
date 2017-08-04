@@ -29,7 +29,8 @@ router.get('/', function(req, res, next) {
   res.sendStatus(200);
 });
 
-router.post('/handle/image/data', function(req, res) {
+// id paramater: id for user that the image is being generated
+router.post('/handle/image/data/:id', function(req, res) {
   console.log("got buffered data on server side");
 
   var body = req.body;
@@ -79,15 +80,18 @@ router.post('/handle/image/data', function(req, res) {
   });
 });
 
-router.get('/get/data', function(req,res) {
-  var obj = {list: blurbsToGoInMeme};
+// id paramater: id for user that the image is being generated
+router.get('/get/data/:id', function(req,res) {
+  var obj = {list: blurbsToGoInMeme, id: req.params.id};
   var JSONobj = JSON.stringify(obj);
   res.send(JSONobj);
 });
 
+// id paramater: id for user that the image is being generated
 // this endpoint gets called by the phantomjs page.open;
-router.get('/generate/meme', function(req, res) {
+router.get('/generate/meme/:id', function(req, res) {
   console.log("redirected from phantomjs...");
+  // pass in the id to the call -> TODO: change to res.render
   res.sendFile(path.join(__dirname, '../web', 'meme-generate.html'));
 });
 
@@ -332,6 +336,7 @@ function receivedMessage(evnt) {
         // open a headless browser window here and generate the meme
 
         var phantomURL = process.env.PHANTOM_URL;
+        phantomURL = phantomURL + '/' + senderID;
 
         var phantomjs = require('phantomjs-prebuilt');
         var program = phantomjs.exec('/app/src/phantom-script.js', phantomURL);
