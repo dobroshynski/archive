@@ -8,18 +8,19 @@ const fs = require('fs');
 const request = require('request');
 
 // global variables to track some basic state for testing
-var inProgressOfGenerating = false; // TODO change this variable usage to reflect whether or not there is at least one MemeGenerated object currently active
-var blurbsReceived = 0;
-var blurbsToGoInMeme = [];
+// var inProgressOfGenerating = false; // TODO change this variable usage to reflect whether or not there is at least one MemeGenerated object currently active
+// var blurbsReceived = 0;
+// var blurbsToGoInMeme = [];
 
-var memes = {}; // dictionary/object of MemeGenerated objects
+var shouldEchoBack = false;
+
+var memes = {}; // dictionary/object of MemeGenerated objects; key = id, value = MemeGenerated
 
 class MemeGenerated {
-  constructor(id, userID) {
-    this.id = id;
+  constructor(userID) {
     this.userID = userID;
     this.blurbsToGoInMeme = [];
-    this.blurbsReceived = 0
+    this.blurbsReceived = 0;
     this.inProgressOfGeneratingMeme = true
   }
 }
@@ -69,6 +70,7 @@ router.post('/handle/image/data/:id', function(req, res) {
               if (err) throw err;
               console.log('successfully deleted ' + fileName + ' from local storage');
               var userID = req.params.id;
+
               // respond back with data
               sendMemeBackToUserAndReset(fileURLonAWS, userID);
             });
@@ -81,7 +83,8 @@ router.post('/handle/image/data/:id', function(req, res) {
 
 // id paramater: id for user that the image is being generated
 router.get('/get/data/:id', function(req,res) {
-  var obj = {list: blurbsToGoInMeme, id: req.params.id};
+  var blurbsForMemeForCurrentUser = memes[req.params.id].blurbsToGoInMeme;
+  var obj = {list: blurbsForMemeForCurrentUser, id: req.params.id};
   var JSONobj = JSON.stringify(obj);
   res.send(JSONobj);
 });
@@ -93,7 +96,7 @@ router.get('/generate/meme/:id', function(req, res) {
   // pass in the id to the call
   var obj = {id: req.params.id};
   console.log(path.join(__dirname + '/../web' + '/meme-generate'));
-  
+
   res.render(path.join(__dirname + '/../web' + '/meme-generate'), obj);
 });
 
@@ -151,10 +154,8 @@ router.post('/messenger-webhook', function(req, res) {
 
 // send the generated meme to the user and reset the state
 function sendMemeBackToUserAndReset(fileURL, senderID) {
-  // reset state
-  inProgressOfGenerating = false;
-  blurbsReceived = 0;
-  blurbsToGoInMeme = [];
+
+  memes[senderID] = undefined; // reset the meme for this user ID so can create new one later
 
   var messageText = "Here is your meme!";
   sendTextMessage(senderID, messageText);
@@ -190,8 +191,8 @@ function sendMeme(fileURL, recipientId) {
 }
 
 function sendMemeConfirmMessage(recipientId, memeType) {
-  if(memeType === "EXPANDING_BRAIN_MEME" && !inProgressOfGenerating) {
-    inProgressOfGenerating = true;
+  if(memeType === "EXPANDING_BRAIN_MEME") {
+    // inProgressOfGenerating = true;
     var messageText = "Cool, you've picked the Expanding Brain Meme template";
     var followUpMessage = "Please message the 1/4 blurb of text for your meme";
     console.log("sending confirm message...");
@@ -296,43 +297,60 @@ function receivedMessage(evnt) {
   var messageAttachments = message.attachments;
 
   if(messageText) {
-    if(!inProgressOfGenerating) {
+    if(shouldEchoBack) {
       // echo back the text for now
       sendTextMessage(senderID, messageText);
     } else {
       // currently in progress of generating a meme and received some text
-      if(blurbsReceived === 0) {
-        blurbsReceived++;
-        blurbsToGoInMeme.push(messageText);
-        console.log("added text to array; blurbs recieved: " + blurbsReceived);
+
+      var memeForThisUser = memes[senderID]; // try to get the meme from the dictionary
+
+      if(memeForThisUser) { // already have meme in progress
+
+      } else { // start making a new one
+        var meme = new MemeGenerated(senderID);
+        console.log(meme);
+        console.log('starting new meme for user ' + senderID + '... added to dictionary of memes');
+        memes[senderID] = meme;
+        memeForThisUser = memes[senderID];
+      }
+
+      console.log("meme for this user:");
+      console.log(memeForThisUser);
+
+      if(memeForThisUser.blurbsReceived === 0) {
+
+        memeForThisUser.blurbsReceived++;
+        memeForThisUser.blurbsToGoInMeme.push(messageText);
+
+        console.log("added text to array; blurbs recieved: " + memeForThisUser.blurbsReceived);
 
         var messageText = "Please message the 2/4 blurb of text for your meme";
         console.log("sending message asking for next blurb...");
         sendTextMessage(senderID, messageText);
-      } else if(blurbsReceived === 1) {
-        blurbsReceived++;
-        blurbsToGoInMeme.push(messageText);
-        console.log("added text to array; blurbs recieved: " + blurbsReceived);
+      } else if(memeForThisUser.blurbsReceived === 1) {
+        memeForThisUser.blurbsReceived++;
+        memeForThisUser.blurbsToGoInMeme.push(messageText);
+        console.log("added text to array; blurbs recieved: " + memeForThisUser.blurbsReceived);
 
         var messageText = "Please message the 3/4 blurb of text for your meme";
         console.log("sending message asking for next blurb...");
         sendTextMessage(senderID, messageText);
-      } else if(blurbsReceived === 2) {
-        blurbsReceived++;
-        blurbsToGoInMeme.push(messageText);
-        console.log("added text to array; blurbs recieved: " + blurbsReceived);
+      } else if(memeForThisUser.blurbsReceived === 2) {
+        memeForThisUser.blurbsReceived++;
+        memeForThisUser.blurbsToGoInMeme.push(messageText);
+        console.log("added text to array; blurbs recieved: " + memeForThisUser.blurbsReceived);
 
         var messageText = "Please message the 4/4 blurb of text for your meme";
         console.log("sending message asking for next blurb...");
         sendTextMessage(senderID, messageText);
-      } else if(blurbsReceived === 3) {
+      } else if(memeForThisUser.blurbsReceived === 3) {
         // got the 4th blurb
-        blurbsReceived++;
-        blurbsToGoInMeme.push(messageText);
-        console.log("added text to array; blurbs recieved: " + blurbsReceived);
+        memeForThisUser.blurbsReceived++;
+        memeForThisUser.blurbsToGoInMeme.push(messageText);
+        console.log("added text to array; blurbs recieved: " + memeForThisUser.blurbsReceived);
         console.log("array currently:");
-        console.log(blurbsToGoInMeme);
-
+        console.log(memeForThisUser.blurbsToGoInMeme);
 
         // open a headless browser window here and generate the meme
 
