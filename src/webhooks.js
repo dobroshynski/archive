@@ -184,6 +184,17 @@ function sendMeme(fileURL, recipientId) {
 
 function sendMemeConfirmMessage(recipientId, memeType) {
   if(memeType === "EXPANDING_BRAIN_MEME") {
+    var memeForThisUser = memes[recipientId]; // try to get the meme from the dictionary
+
+    if(memeForThisUser) { // already have meme in progress
+
+    } else { // start making a new one
+      var meme = new MemeGenerated(recipientId);
+      console.log(meme);
+      console.log('starting new meme for user ' + recipientId + '... added to dictionary of memes');
+      memes[recipientId] = meme;
+    }
+
     var messageText = "Cool, you've picked the Expanding Brain Meme template";
     var followUpMessage = "Please message the 1/4 blurb of text for your meme";
     console.log("sending confirm message...");
@@ -295,17 +306,7 @@ function receivedMessage(evnt) {
       // currently in progress of generating a meme and received some text
 
       var memeForThisUser = memes[senderID]; // try to get the meme from the dictionary
-
-      if(memeForThisUser) { // already have meme in progress
-
-      } else { // start making a new one
-        var meme = new MemeGenerated(senderID);
-        console.log(meme);
-        console.log('starting new meme for user ' + senderID + '... added to dictionary of memes');
-        memes[senderID] = meme;
-        memeForThisUser = memes[senderID];
-      }
-
+      
       console.log("meme for this user:");
       console.log(memeForThisUser);
 
