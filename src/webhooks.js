@@ -11,14 +11,13 @@ const request = require('request');
 var inProgressOfGenerating = false; // TODO change this variable usage to reflect whether or not there is at least one MemeGenerated object currently active
 var blurbsReceived = 0;
 var blurbsToGoInMeme = [];
-var idUser;
 
 var memes = {}; // dictionary/object of MemeGenerated objects
 
 class MemeGenerated {
-  constructor(id, idUser) {
+  constructor(id, userID) {
     this.id = id;
-    this.idUser = idUser;
+    this.userID = userID;
     this.blurbsToGoInMeme = [];
     this.blurbsReceived = 0
     this.inProgressOfGeneratingMeme = true
@@ -69,9 +68,9 @@ router.post('/handle/image/data/:id', function(req, res) {
             fs.unlink(fileName, (err) => {
               if (err) throw err;
               console.log('successfully deleted ' + fileName + ' from local storage');
-
+              var userID = req.params.id;
               // respond back with data
-              sendMemeBackToUserAndReset(fileURLonAWS, idUser);
+              sendMemeBackToUserAndReset(fileURLonAWS, userID);
             });
           }
         });
@@ -93,7 +92,9 @@ router.get('/generate/meme/:id', function(req, res) {
   console.log("redirected from phantomjs...");
   // pass in the id to the call
   var obj = {id: req.params.id};
-  res.render('/web/meme-generate', obj);
+  console.log(path.join(__dirname + '/../web' + '/meme-generate'));
+  
+  res.render(path.join(__dirname + '/../web' + '/meme-generate'), obj);
 });
 
 // authenticate FB messenger webooks
@@ -332,7 +333,6 @@ function receivedMessage(evnt) {
         console.log("array currently:");
         console.log(blurbsToGoInMeme);
 
-        idUser = senderID;
 
         // open a headless browser window here and generate the meme
 

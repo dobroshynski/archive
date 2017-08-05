@@ -6,6 +6,7 @@
 
 <body>
   <canvas id="canvas"></canvas>
+  <div class="userID" id="{{id}}"> </div>
   <script>
     document.addEventListener("DOMContentLoaded", main);
 
@@ -41,6 +42,8 @@
     function handleData() {
       var parsed = JSON.parse(this.responseText);
       var paragraphList = parsed.list;
+
+      var userID = parsed.id;
 
       var text = paragraphList[0];
       var text2 = paragraphList[1];
@@ -91,14 +94,15 @@
           var data = {};
           data.data = imageBufferedData;
 
-          $.post('/handle/image/data', data, handleServerResponse);
+          $.post(('/handle/image/data/' + userID), data, handleServerResponse);
         })(jQuery);
       };
     }
 
     function main() {
+      var userID = document.getElementsByClassName("userID")[0].id;
       var req = new XMLHttpRequest();
-  		var url = "/get/data";
+  		var url = "/get/data/" + userID;
   		req.open('GET',url,true);
   		req.addEventListener('load',handleData);
   		req.addEventListener('error',handleError);
