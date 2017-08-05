@@ -23,6 +23,9 @@ server.use(express.static(path.join(__dirname, 'web')));
 
 server.use('/', webhooks);
 
+// setting hbs as view engine
+server.set('view engine', 'hbs');
+
 // catch 404 and forward to error handler
 server.use(function(req, res, next) {
   var err = new Error('Not Found');

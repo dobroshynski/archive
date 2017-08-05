@@ -91,8 +91,9 @@ router.get('/get/data/:id', function(req,res) {
 // this endpoint gets called by the phantomjs page.open;
 router.get('/generate/meme/:id', function(req, res) {
   console.log("redirected from phantomjs...");
-  // pass in the id to the call -> TODO: change to res.render
-  res.sendFile(path.join(__dirname, '../web', 'meme-generate.html'));
+  // pass in the id to the call
+  var obj = {id: req.params.id};
+  res.render('/web/meme-generate', obj);
 });
 
 // authenticate FB messenger webooks
