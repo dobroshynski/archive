@@ -7,13 +7,6 @@ const fs = require('fs');
 
 const request = require('request');
 
-// global variables to track some basic state for testing
-// var inProgressOfGenerating = false; // TODO change this variable usage to reflect whether or not there is at least one MemeGenerated object currently active
-// var blurbsReceived = 0;
-// var blurbsToGoInMeme = [];
-
-var shouldEchoBack = false;
-
 var memes = {}; // dictionary/object of MemeGenerated objects; key = id, value = MemeGenerated
 
 class MemeGenerated {
@@ -21,7 +14,6 @@ class MemeGenerated {
     this.userID = userID;
     this.blurbsToGoInMeme = [];
     this.blurbsReceived = 0;
-    this.inProgressOfGeneratingMeme = true
   }
 }
 
@@ -192,7 +184,6 @@ function sendMeme(fileURL, recipientId) {
 
 function sendMemeConfirmMessage(recipientId, memeType) {
   if(memeType === "EXPANDING_BRAIN_MEME") {
-    // inProgressOfGenerating = true;
     var messageText = "Cool, you've picked the Expanding Brain Meme template";
     var followUpMessage = "Please message the 1/4 blurb of text for your meme";
     console.log("sending confirm message...");
@@ -297,7 +288,7 @@ function receivedMessage(evnt) {
   var messageAttachments = message.attachments;
 
   if(messageText) {
-    if(shouldEchoBack) {
+    if(!memes[senderID]) { // there is no currently generating meme for the current user
       // echo back the text for now
       sendTextMessage(senderID, messageText);
     } else {
