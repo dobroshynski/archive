@@ -20,7 +20,7 @@
       console.log("ERROR WITH AJAX CALL");
     }
 
-    function wrapText(context, text, x, y, maxWidth, lineHeight) {
+    function wrapText(context, text, x, y, maxWidth, spacing) {
       var words = text.split(' ');
       var line = '';
 
@@ -31,12 +31,17 @@
         if(testWidth > maxWidth && n > 0) {
           context.fillText(line, x, y);
           line = words[n] + ' ';
-          y += lineHeight;
+          y += spacing;
         } else {
           line = testLine;
         }
       }
       context.fillText(line, x, y);
+    }
+
+    function calculateFontForCharacters(numberOfCharacters) {
+      var scale = 1.1;
+      return 190 * Math.pow(numberOfCharacters, -0.4432) * scale;
     }
 
     function handleData() {
@@ -64,28 +69,67 @@
 
         // fill in the image with text and align
         var maxWidth = 400;
-        var lineHeight = 25;
-        var x1 = 10;
 
+        // set offset calculation
         ctx.font = '16pt Arial';
-        ctx.fillStyle = '#333';
-
         var offset = ctx.measureText('M').width;
+
+        // blurb 1 calculations
+        var numberOfCharacters = text.length;
+        var fontCalculation = calculateFontForCharacters(numberOfCharacters);
+        var spacingCalculation = fontCalculation * 1.5;
+
+        ctx.font = '' + fontCalculation + 'pt Arial';
+        offset = ctx.measureText('M').width;
+
+        var x1 = 10;
         var y1 = 10 + offset;
-        wrapText(ctx, text, x1, y1, maxWidth, lineHeight);
+        wrapText(ctx, text, x1, y1, maxWidth, spacingCalculation);
+
+        // reset offset calculation
+        ctx.font = '16pt Arial';
+        offset = ctx.measureText('M').width;
+
+        // blurb 2 calculations
+        numberOfCharacters = text2.length;
+        fontCalculation = calculateFontForCharacters(numberOfCharacters);
+        spacingCalculation = fontCalculation * 1.5;
+
+        ctx.font = '' + fontCalculation + 'pt Arial';
 
         var x2 = 10;
         var y2 = 300 + offset * 2;
-        wrapText(ctx, text2, x2, y2, maxWidth, lineHeight);
+        wrapText(ctx, text2, x2, y2, maxWidth, spacingCalculation);
+
+        // reset offset calculation
+        ctx.font = '16pt Arial';
+        offset = ctx.measureText('M').width;
+
+        // blurb 3 calculations
+        numberOfCharacters = text3.length;
+        fontCalculation = calculateFontForCharacters(numberOfCharacters);
+        spacingCalculation = fontCalculation * 1.5;
+
+        ctx.font = '' + fontCalculation + 'pt Arial';
 
         var x3 = 10;
-        var y3 = 610 + offset * 2;
-        wrapText(ctx, text3, x3, y3, maxWidth, lineHeight);
+        var y3 = 620 + offset * 2;
+        wrapText(ctx, text3, x3, y3, maxWidth, spacingCalculation);
+
+        // reset offset calculation
+        ctx.font = '16pt Arial';
+        offset = ctx.measureText('M').width;
+
+        // blurb 4 calculations
+        numberOfCharacters = text4.length;
+        fontCalculation = calculateFontForCharacters(numberOfCharacters);
+        spacingCalculation = fontCalculation * 1.5;
+
+        ctx.font = '' + fontCalculation + 'pt Arial';
 
         var x4 = 10;
         var y4 = 900 + offset * 2;
-        wrapText(ctx, text4, x4, y4, maxWidth, lineHeight);
-
+        wrapText(ctx, text4, x4, y4, maxWidth, spacingCalculation);
 
         var imageBufferedData = document.getElementById("canvas").toDataURL();
 
