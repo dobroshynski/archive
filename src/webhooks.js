@@ -306,7 +306,7 @@ function receivedMessage(evnt) {
       // currently in progress of generating a meme and received some text
 
       var memeForThisUser = memes[senderID]; // try to get the meme from the dictionary
-      
+
       console.log("meme for this user:");
       console.log(memeForThisUser);
 
@@ -347,8 +347,8 @@ function receivedMessage(evnt) {
         // open a headless browser window here and generate the meme
 
         var phantomURL = process.env.PHANTOM_URL;
-        phantomURL = phantomURL + '/' + senderID;
-
+        phantomURL = phantomURL + '/generate/meme/' + senderID;
+        
         var phantomjs = require('phantomjs-prebuilt');
         var program = phantomjs.exec('/app/src/phantom-script.js', phantomURL);
 
