@@ -54,6 +54,10 @@
       return 190 * Math.pow(numberOfCharacters, -0.4432) * scale;
     }
 
+    function isUpperCase(str) {
+      return str === str.toUpperCase();
+    }
+
     function handleData() {
       var parsed = JSON.parse(this.responseText);
       var paragraphList = parsed.list;
@@ -79,12 +83,14 @@
 
         // fill in the image with text and align
         var maxWidth = 400;
+        var xOffset = 10;
 
-        // set offset calculation
-        ctx.font = '16pt Roboto';
-        var offset = ctx.measureText('M').width;
+        var textBox1Height = 10;
+        var textBox2Height = 310;
+        var textBox3Height = 620;
+        var textBox4Height = 910;
 
-        console.log('offset ' + offset);
+        ctx.textBaseline = "top";
 
         // blurb 1 calculations
         var numberOfCharacters = text.length;
@@ -92,15 +98,10 @@
         var spacingCalculation = fontCalculation * 1.5;
 
         ctx.font = '' + fontCalculation + 'pt Roboto';
-        offset = ctx.measureText('M').width;
 
-        var x1 = 0;
-        var y1 = 10 + offset;
+        var x1 = isUpperCase(text) ? 1 : xOffset;
+        var y1 = textBox1Height;
         wrapText(ctx, text, x1, y1, maxWidth, spacingCalculation);
-
-        // reset offset calculation
-        // ctx.font = '16pt Arial';
-        // offset = ctx.measureText('M').width;
 
         // blurb 2 calculations
         numberOfCharacters = text2.length;
@@ -109,13 +110,9 @@
 
         ctx.font = '' + fontCalculation + 'pt Roboto';
 
-        var x2 = 0;
-        var y2 = y1 + 310;
+        var x2 = isUpperCase(text2) ? 1 : xOffset;;
+        var y2 = textBox2Height;
         wrapText(ctx, text2, x2, y2, maxWidth, spacingCalculation);
-
-        // reset offset calculation
-        ctx.font = '16pt Roboto';
-        offset = ctx.measureText('M').width;
 
         // blurb 3 calculations
         numberOfCharacters = text3.length;
@@ -124,13 +121,9 @@
 
         ctx.font = '' + fontCalculation + 'pt Roboto';
 
-        var x3 = 0;
-        var y3 = y2 + 310;
+        var x3 = isUpperCase(text3) ? 1 : xOffset;;
+        var y3 = textBox3Height;
         wrapText(ctx, text3, x3, y3, maxWidth, spacingCalculation);
-
-        // reset offset calculation
-        ctx.font = '16pt Roboto';
-        offset = ctx.measureText('M').width;
 
         // blurb 4 calculations
         numberOfCharacters = text4.length;
@@ -139,8 +132,8 @@
 
         ctx.font = '' + fontCalculation + 'pt Roboto';
 
-        var x4 = 0;
-        var y4 = y3 + 280;
+        var x4 = isUpperCase(text4) ? 1 : xOffset;;
+        var y4 = textBox4Height;
         wrapText(ctx, text4, x4, y4, maxWidth, spacingCalculation);
 
         var imageBufferedData = document.getElementById("canvas").toDataURL();
