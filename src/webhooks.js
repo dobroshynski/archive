@@ -64,6 +64,7 @@ router.post('/handle/image/data/:id', function(req, res) {
               var userID = req.params.id;
 
               // respond back with data
+              setTypingOff(userID);
               sendMemeBackToUserAndReset(fileURLonAWS, userID);
               res.sendStatus(200);
             });
@@ -228,6 +229,35 @@ function sendWelcomeTextMessage(recipientId, messageText) {
   sendAPICall(messageData);
 }
 
+function setTypingOff(recipientId) {
+  var setTypingOffData = {
+    recipient:{
+      id: recipientId
+    },
+    sender_action:"typing_off"
+  };
+  sendAPICall(setTypingOffData);
+}
+
+function sendTextMessageAndSetTypingOn(recipientId, messageText) {
+  var messageData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      text: messageText
+    }
+  };
+  var setTypingOnData = {
+    recipient:{
+      id: recipientId
+    },
+    sender_action:"typing_on"
+  };
+  sendAPICall(messageData);
+  sendAPICall(setTypingOnData);
+}
+
 function sendTextMessage(recipientId, messageText, followUpMessage) {
   var messageData = {
     recipient: {
@@ -344,6 +374,10 @@ function receivedMessage(evnt) {
         console.log("added text to array; blurbs recieved: " + memeForThisUser.blurbsReceived);
         console.log("array currently:");
         console.log(memeForThisUser.blurbsToGoInMeme);
+
+        // send message informing the user the meme is being generated
+        var messageText = "Thanks! Your meme is currently being generated";
+        sendTextMessageAndSetTypingOn(senderID, messageText);
 
         // open a headless browser window here and generate the meme
 
