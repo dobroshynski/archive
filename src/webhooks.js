@@ -65,6 +65,7 @@ router.post('/handle/image/data/:id', function(req, res) {
 
               // respond back with data
               sendMemeBackToUserAndReset(fileURLonAWS, userID);
+              res.sendStatus(200);
             });
           }
         });
@@ -348,7 +349,7 @@ function receivedMessage(evnt) {
 
         var phantomURL = process.env.PHANTOM_URL;
         phantomURL = phantomURL + '/generate/meme/' + senderID;
-        
+
         var phantomjs = require('phantomjs-prebuilt');
         var program = phantomjs.exec('/app/src/phantom-script.js', phantomURL);
 
@@ -357,6 +358,7 @@ function receivedMessage(evnt) {
         program.on('exit', code => {
           console.log("node: phantom script exited..." + code);
         });
+        res.sendStatus(200);
       }
     }
   } else if(messageAttachments) {
