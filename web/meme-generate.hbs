@@ -5,8 +5,18 @@
 </header>
 
 <body>
+  <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+  <script>
+  WebFont.load({
+    google: {
+      families: ['Roboto']
+    }
+  });
+  </script>
+
   <canvas id="canvas"></canvas>
   <div class="userID" id="{{id}}"> </div>
+
   <script>
     document.addEventListener("DOMContentLoaded", main);
 
@@ -71,7 +81,7 @@
         var maxWidth = 400;
 
         // set offset calculation
-        ctx.font = '16pt Arial';
+        ctx.font = '16pt Roboto';
         var offset = ctx.measureText('M').width;
 
         console.log('offset ' + offset);
@@ -81,7 +91,7 @@
         var fontCalculation = calculateFontForCharacters(numberOfCharacters);
         var spacingCalculation = fontCalculation * 1.5;
 
-        ctx.font = '' + fontCalculation + 'pt Arial';
+        ctx.font = '' + fontCalculation + 'pt Roboto';
         offset = ctx.measureText('M').width;
 
         var x1 = 0;
@@ -97,14 +107,14 @@
         fontCalculation = calculateFontForCharacters(numberOfCharacters);
         spacingCalculation = fontCalculation * 1.5;
 
-        ctx.font = '' + fontCalculation + 'pt Arial';
+        ctx.font = '' + fontCalculation + 'pt Roboto';
 
         var x2 = 0;
         var y2 = y1 + 310;
         wrapText(ctx, text2, x2, y2, maxWidth, spacingCalculation);
 
         // reset offset calculation
-        ctx.font = '16pt Arial';
+        ctx.font = '16pt Roboto';
         offset = ctx.measureText('M').width;
 
         // blurb 3 calculations
@@ -112,14 +122,14 @@
         fontCalculation = calculateFontForCharacters(numberOfCharacters);
         spacingCalculation = fontCalculation * 1.5;
 
-        ctx.font = '' + fontCalculation + 'pt Arial';
+        ctx.font = '' + fontCalculation + 'pt Roboto';
 
         var x3 = 0;
         var y3 = y2 + 310;
         wrapText(ctx, text3, x3, y3, maxWidth, spacingCalculation);
 
         // reset offset calculation
-        ctx.font = '16pt Arial';
+        ctx.font = '16pt Roboto';
         offset = ctx.measureText('M').width;
 
         // blurb 4 calculations
@@ -127,7 +137,7 @@
         fontCalculation = calculateFontForCharacters(numberOfCharacters);
         spacingCalculation = fontCalculation * 1.5;
 
-        ctx.font = '' + fontCalculation + 'pt Arial';
+        ctx.font = '' + fontCalculation + 'pt Roboto';
 
         var x4 = 0;
         var y4 = y3 + 280;
