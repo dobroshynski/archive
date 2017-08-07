@@ -74,6 +74,8 @@
         ctx.font = '16pt Arial';
         var offset = ctx.measureText('M').width;
 
+        console.log('offset ' + offset);
+
         // blurb 1 calculations
         var numberOfCharacters = text.length;
         var fontCalculation = calculateFontForCharacters(numberOfCharacters);
@@ -82,13 +84,13 @@
         ctx.font = '' + fontCalculation + 'pt Arial';
         offset = ctx.measureText('M').width;
 
-        var x1 = 10;
+        var x1 = 0;
         var y1 = 10 + offset;
         wrapText(ctx, text, x1, y1, maxWidth, spacingCalculation);
 
         // reset offset calculation
-        ctx.font = '16pt Arial';
-        offset = ctx.measureText('M').width;
+        // ctx.font = '16pt Arial';
+        // offset = ctx.measureText('M').width;
 
         // blurb 2 calculations
         numberOfCharacters = text2.length;
@@ -97,8 +99,8 @@
 
         ctx.font = '' + fontCalculation + 'pt Arial';
 
-        var x2 = 10;
-        var y2 = 300 + offset * 2;
+        var x2 = 0;
+        var y2 = y1 + 310;
         wrapText(ctx, text2, x2, y2, maxWidth, spacingCalculation);
 
         // reset offset calculation
@@ -112,8 +114,8 @@
 
         ctx.font = '' + fontCalculation + 'pt Arial';
 
-        var x3 = 10;
-        var y3 = 620 + offset * 2;
+        var x3 = 0;
+        var y3 = y2 + 310;
         wrapText(ctx, text3, x3, y3, maxWidth, spacingCalculation);
 
         // reset offset calculation
@@ -127,8 +129,8 @@
 
         ctx.font = '' + fontCalculation + 'pt Arial';
 
-        var x4 = 10;
-        var y4 = 900 + offset * 2;
+        var x4 = 0;
+        var y4 = y3 + 280;
         wrapText(ctx, text4, x4, y4, maxWidth, spacingCalculation);
 
         var imageBufferedData = document.getElementById("canvas").toDataURL();
