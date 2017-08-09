@@ -152,9 +152,9 @@ function sendMemeBackToUserAndReset(fileURL, senderID) {
   memes[senderID] = undefined; // reset the meme for this user ID so can create new one later
 
   var messageText = "Here is your meme!";
-  sendTextMessage(senderID, messageText);
-
+  
   sendMeme(fileURL, senderID);
+  sendTextMessage(senderID, messageText);
 }
 
 function sendMeme(fileURL, recipientId) {
@@ -348,7 +348,7 @@ function receivedMessage(evnt) {
 
         console.log("added text to array; blurbs recieved: " + memeForThisUser.blurbsReceived);
 
-        var messageText = "Please message the 2/4 blurb of text for your meme";
+        var messageText = "Thanks! Please message the 2/4 blurb of text for your meme";
         console.log("sending message asking for next blurb...");
         sendTextMessage(senderID, messageText);
       } else if(memeForThisUser.blurbsReceived === 1) {
@@ -356,7 +356,7 @@ function receivedMessage(evnt) {
         memeForThisUser.blurbsToGoInMeme.push(messageText);
         console.log("added text to array; blurbs recieved: " + memeForThisUser.blurbsReceived);
 
-        var messageText = "Please message the 3/4 blurb of text for your meme";
+        var messageText = "Awesome. Please message the 3/4 blurb of text for your meme";
         console.log("sending message asking for next blurb...");
         sendTextMessage(senderID, messageText);
       } else if(memeForThisUser.blurbsReceived === 2) {
@@ -364,7 +364,7 @@ function receivedMessage(evnt) {
         memeForThisUser.blurbsToGoInMeme.push(messageText);
         console.log("added text to array; blurbs recieved: " + memeForThisUser.blurbsReceived);
 
-        var messageText = "Please message the 4/4 blurb of text for your meme";
+        var messageText = "Got it. Now please message the 4/4 blurb of text for your meme";
         console.log("sending message asking for next blurb...");
         sendTextMessage(senderID, messageText);
       } else if(memeForThisUser.blurbsReceived === 3) {
