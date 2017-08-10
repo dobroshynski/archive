@@ -104,6 +104,7 @@
 
         ctx.font = '' + fontCalculation + 'pt Roboto';
 
+        // adjust font calulcation for tex1 to not overflow if large word
         if(isOneWord(text) && ctx.measureText(text).width > maxWidth) {
           var length = ctx.measureText(text).width;
           while(length > maxWidth) {
@@ -124,6 +125,16 @@
 
         ctx.font = '' + fontCalculation + 'pt Roboto';
 
+        // adjust font calulcation for text2 to not overflow if large word
+        if(isOneWord(text2) && ctx.measureText(text2).width > maxWidth) {
+          var length = ctx.measureText(text2).width;
+          while(length > maxWidth) {
+            fontCalculation -= 1;
+            ctx.font = '' + fontCalculation + 'pt Roboto';
+            length = ctx.measureText(text2).width;
+          }
+        }
+
         var x2 = isUpperCase(text2) ? 1 : xOffset;;
         var y2 = textBox2Height;
         wrapText(ctx, text2, x2, y2, maxWidth, spacingCalculation);
@@ -135,6 +146,16 @@
 
         ctx.font = '' + fontCalculation + 'pt Roboto';
 
+        // adjust font calulcation for text3 to not overflow if large word
+        if(isOneWord(text3) && ctx.measureText(text3).width > maxWidth) {
+          var length = ctx.measureText(text3).width;
+          while(length > maxWidth) {
+            fontCalculation -= 1;
+            ctx.font = '' + fontCalculation + 'pt Roboto';
+            length = ctx.measureText(text3).width;
+          }
+        }
+
         var x3 = isUpperCase(text3) ? 1 : xOffset;;
         var y3 = textBox3Height;
         wrapText(ctx, text3, x3, y3, maxWidth, spacingCalculation);
@@ -145,6 +166,16 @@
         spacingCalculation = fontCalculation * 1.5;
 
         ctx.font = '' + fontCalculation + 'pt Roboto';
+
+        // adjust font calulcation for text4 to not overflow if large word
+        if(isOneWord(text4) && ctx.measureText(text4).width > maxWidth) {
+          var length = ctx.measureText(text4).width;
+          while(length > maxWidth) {
+            fontCalculation -= 1;
+            ctx.font = '' + fontCalculation + 'pt Roboto';
+            length = ctx.measureText(text4).width;
+          }
+        }
 
         var x4 = isUpperCase(text4) ? 1 : xOffset;;
         var y4 = textBox4Height;
