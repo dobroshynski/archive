@@ -58,6 +58,11 @@
       return str === str.toUpperCase();
     }
 
+    function isOneWord(str) {
+      var words = str.trim().split(" ");
+      return words.length === 1 ? true : false;
+    }
+
     function handleData() {
       var parsed = JSON.parse(this.responseText);
       var paragraphList = parsed.list;
@@ -98,6 +103,15 @@
         var spacingCalculation = fontCalculation * 1.5;
 
         ctx.font = '' + fontCalculation + 'pt Roboto';
+
+        if(isOneWord(text) && ctx.measureText(text).width > maxWidth) {
+          var length = ctx.measureText(text).width;
+          while(length > maxWidth) {
+            fontCalculation -= 1;
+            ctx.font = '' + fontCalculation + 'pt Roboto';
+            length = ctx.measureText(text).width;
+          }
+        }
 
         var x1 = isUpperCase(text) ? 1 : xOffset;
         var y1 = textBox1Height;
