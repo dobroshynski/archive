@@ -196,6 +196,7 @@ function sendMemeConfirmMessage(recipientId, memeType) {
       console.log('starting new meme for user ' + recipientId + '... added to dictionary of memes');
       memes[recipientId] = meme;
     }
+    markMessageRead(recipientId);
 
     var messageText = "Cool, you've picked the Expanding Brain Meme template";
     var followUpMessage = "Please message the 1/4 blurb of text for your meme";
@@ -205,6 +206,8 @@ function sendMemeConfirmMessage(recipientId, memeType) {
 }
 
 function sendWelcomeMessage(recipientId) {
+  markMessageRead(recipientId);
+
   var messageText = "Welcome! Please choose a type of meme you would like to generate from the in-chat menu";
   console.log("sending welcome message...");
   sendWelcomeTextMessage(recipientId, messageText);
@@ -227,6 +230,16 @@ function sendWelcomeTextMessage(recipientId, messageText) {
     }
   };
   sendAPICall(messageData);
+}
+
+function markMessageRead(recipientId) {
+  var setMessageReadData = {
+    recipient:{
+      id: recipientId
+    },
+    sender_action:"mark_seen"
+  };
+  sendAPICall(setMessageReadData);
 }
 
 function setTypingOff(recipientId) {
@@ -374,6 +387,9 @@ function receivedMessage(evnt) {
         console.log("added text to array; blurbs recieved: " + memeForThisUser.blurbsReceived);
         console.log("array currently:");
         console.log(memeForThisUser.blurbsToGoInMeme);
+
+        // mark the message read
+        markMessageRead(senderID);
 
         // send message informing the user the meme is being generated
         var messageText = "Thanks! Your meme is currently being generated";
