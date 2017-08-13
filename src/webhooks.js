@@ -152,7 +152,7 @@ function sendMemeBackToUserAndReset(fileURL, senderID) {
   memes[senderID] = undefined; // reset the meme for this user ID so can create new one later
 
   var messageText = "Here is your meme!";
-  
+
   sendMeme(fileURL, senderID);
   sendTextMessage(senderID, messageText);
 }
@@ -325,6 +325,7 @@ function receivedQuickReplyMessage(evnt) {
   console.log("received message from quick reply");
   if(quickReply.payload === "EXPANDING_BRAIN_MEME_QUICK_REPLY_PAYLOAD") {
     console.log("user chose expanding brain meme template from quick reply...");
+    markMessageRead(senderID);
     sendMemeConfirmMessage(evnt.sender.id, "EXPANDING_BRAIN_MEME");
   }
 }
@@ -363,6 +364,7 @@ function receivedMessage(evnt) {
 
         var messageText = "Thanks! Please message the 2/4 blurb of text for your meme";
         console.log("sending message asking for next blurb...");
+        markMessageRead(senderID);
         sendTextMessage(senderID, messageText);
       } else if(memeForThisUser.blurbsReceived === 1) {
         memeForThisUser.blurbsReceived++;
@@ -371,6 +373,7 @@ function receivedMessage(evnt) {
 
         var messageText = "Awesome. Please message the 3/4 blurb of text for your meme";
         console.log("sending message asking for next blurb...");
+        markMessageRead(senderID);
         sendTextMessage(senderID, messageText);
       } else if(memeForThisUser.blurbsReceived === 2) {
         memeForThisUser.blurbsReceived++;
@@ -379,6 +382,7 @@ function receivedMessage(evnt) {
 
         var messageText = "Got it. Now please message the 4/4 blurb of text for your meme";
         console.log("sending message asking for next blurb...");
+        markMessageRead(senderID);
         sendTextMessage(senderID, messageText);
       } else if(memeForThisUser.blurbsReceived === 3) {
         // got the 4th blurb
