@@ -10,7 +10,7 @@ var webhooks = require('./src/webhooks');
 var app = express();
 
 // tunneling with ngrok to test hooks while on localhost
-var testing = false;
+var testing = true;
 if(testing) {
   var ngrok = require('ngrok');
 
