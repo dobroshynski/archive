@@ -1,0 +1,15 @@
+That's a bad idea
+That's a bad point
+I disagree
+Nope
+No
+Nah
+Not at all
+Not a great idea
+Not a good idea
+Bad idea
+That's incorrect
+That's not right
+Nope, that doesn't sound right
+DISLIKE_KEY
+ANGRY_REACT_KEY
