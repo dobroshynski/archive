@@ -49,7 +49,7 @@ router.post('/events', function(req,res) {
       uri: 'https://slack.com/api/reactions.add',
       form: {
         token: process.env.BOT_AUTH_TOKEN,
-        name: process.env.REACTION_EMOJI_NAME, // "fb_angry"
+        name: process.env.REACTION_EMOJI_NAME !== undefined ? process.env.REACTION_EMOJI_NAME : "rage", // "fb_angry" or default
         channel: payload.event.channel,
         timestamp: payload.event.ts,
         as_user: true
