@@ -4,10 +4,12 @@ const request = require('request');
 const lineReader = require('line-reader');
 const Promise = require('bluebird');
 
-var webhookUri = process.env.WEBHOOK_URI;
-var responsesFileName = 'responses.txt';
+require('dotenv').config();
 
-const debug = false;
+const webhookUri = process.env.WEBHOOK_URI;
+const responsesFileName = 'responses.txt';
+
+const debug = true;
 
 router.get('/', function(req,res) {
   res.sendStatus(200);
@@ -19,51 +21,88 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-router.get('/random-response', function(req,res) {
-  var responses = [];
-  var eachLine = Promise.promisify(lineReader.eachLine);
-
-  eachLine(responsesFileName, function(line) {
-    responses.push(line);
-  }).then(function() {
-    console.log('done.');
-    console.log('responses:');
-    console.log(responses);
-
-    var randomIndex = getRandomInt(0, responses.length);
-    var randomResponse = responses[randomIndex];
-
-    console.log('random index: ' + randomIndex);
-    console.log('random response: ' + randomResponse);
-
-    res.sendStatus(200);
-  }).catch(function(err) {
-    console.error(err);
-    res.sendStatus(500);
-  });
-});
-
-// sends a test message to hook specified by WEBHOOK_URI
-router.get('/test-webhook', function(req, res) {
+function respondWithTextMessage(randomResponse, payload) {
   var headers = {
     'Content-type': 'application/json'
   };
-  var dataString = '{"text":"Slack webhook test"}';
+  var dataString = '{"text":"' + randomResponse + '"}';
   var options = {
     url: webhookUri,
     method: 'POST',
     headers: headers,
     body: dataString
   };
+  request(options);
+}
 
-  request(options, function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-      res.sendStatus(200);
-    } else {
-      console.log("error sending POST request to Slack API");
-      res.sendStatus(500);
+function respondWithDislike(randomResponse, payload) {
+  const options = {
+    method: 'POST',
+    uri: 'https://slack.com/api/reactions.add',
+    form: {
+      token: process.env.BOT_AUTH_TOKEN,
+      name: "thumbsdown",
+      channel: payload.event.channel,
+      timestamp: payload.event.ts,
+      as_user: true
+    },
+    json: true,
+    headers: {
+      'content-type': 'application/x-www-form-urlencoded'
     }
-  });
+  };
+  request(options);
+}
+
+function respondWithAngryReact(randomResponse, payload) {
+  const options = {
+    method: 'POST',
+    uri: 'https://slack.com/api/reactions.add',
+    form: {
+      token: process.env.BOT_AUTH_TOKEN,
+      name: process.env.EMOJI !== undefined ? process.env.EMOJI : "rage",
+      channel: payload.event.channel,
+      timestamp: payload.event.ts,
+      as_user: true
+    },
+    json: true,
+    headers: {
+      'content-type': 'application/x-www-form-urlencoded'
+    }
+  };
+  request(options);
+}
+
+// webhook for Slack's Event Notifications
+router.post('/events', function(req,res) {
+  const payload = req.body;
+  if (payload.type === 'url_verification') {
+    res.send(payload.challenge);
+  } else if (payload.type === 'event_callback' && payload.event.subtype !== "bot_message" && payload.event.user === process.env.MEANBOT_USER_ID) {
+
+    var responses = [];
+    var eachLine = Promise.promisify(lineReader.eachLine);
+
+    eachLine(responsesFileName, function(line) {
+      responses.push(line);
+    }).then(function() {
+
+      var randomIndex = getRandomInt(0, responses.length);
+      var randomResponse = responses[randomIndex];
+
+      if(randomResponse === "DISLIKE_KEY") {
+        respondWithDislike(randomResponse, payload);
+      } else if(randomResponse === "ANGRY_REACT_KEY") {
+        respondWithAngryReact(randomResponse, payload);
+      } else {
+        respondWithTextMessage(randomResponse.toLowerCase(), payload);
+      }
+      res.end();
+    }).catch(function(err) {
+      console.error(err);
+      res.sendStatus(500);
+    });
+  }
 });
 
 module.exports = router;
