@@ -16,3 +16,4 @@ That's not right
 Nope, that doesn't sound right
 DISLIKE_KEY
 ANGRY_REACT_KEY
+ANGRY_EMOJI_REACT_KEY

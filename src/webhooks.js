@@ -54,6 +54,25 @@ function respondWithDislike(randomResponse, payload) {
   request(options);
 }
 
+function respondWithAngryEmojiReact(randomResponse, payload) {
+  const options = {
+    method: 'POST',
+    uri: 'https://slack.com/api/reactions.add',
+    form: {
+      token: process.env.BOT_AUTH_TOKEN,
+      name: "angry",
+      channel: payload.event.channel,
+      timestamp: payload.event.ts,
+      as_user: true
+    },
+    json: true,
+    headers: {
+      'content-type': 'application/x-www-form-urlencoded'
+    }
+  };
+  request(options);
+}
+
 function respondWithAngryReact(randomResponse, payload) {
   const options = {
     method: 'POST',
@@ -94,6 +113,8 @@ router.post('/events', function(req,res) {
         respondWithDislike(randomResponse, payload);
       } else if(randomResponse === "ANGRY_REACT_KEY") {
         respondWithAngryReact(randomResponse, payload);
+      } else if(randomResponse === "ANGRY_EMOJI_REACT_KEY") {
+        respondWithAngryEmojiReact(randomResponse, payload);
       } else {
         respondWithTextMessage(randomResponse.toLowerCase(), payload);
       }
