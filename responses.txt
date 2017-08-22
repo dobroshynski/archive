@@ -1,6 +1,9 @@
 That's a bad idea
 That's a bad point
 I disagree
+I don't approve
+The bot disagrees
+Hmmm, nope
 Nope
 No
 Nah
