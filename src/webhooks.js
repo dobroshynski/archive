@@ -116,6 +116,10 @@ router.post('/events', function(req,res) {
       } else if(randomResponse === "ANGRY_EMOJI_REACT_KEY") {
         respondWithAngryEmojiReact(randomResponse, payload);
       } else {
+        var randomVar = getRandomInt(0, 5);
+        var extraAddedResponseSuffix = randomVar === 1 ? extraAddedResponse = "hmmmmm, " : '';
+        randomResponse = extraAddedResponseSuffix + randomResponse;
+
         respondWithTextMessage(randomResponse.toLowerCase(), payload);
       }
       res.end();
