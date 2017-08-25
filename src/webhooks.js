@@ -117,7 +117,12 @@ router.post('/events', function(req,res) {
         respondWithAngryEmojiReact(randomResponse, payload);
       } else {
         var randomVar = getRandomInt(0, 5);
-        var extraAddedResponseSuffix = randomVar === 1 ? extraAddedResponse = "hmmmmm, " : '';
+        var wonderSuffix = 'hm';
+        for(let i = 0; i < getRandomInt(0, 4); i++) {
+          wonderSuffix += 'm';
+        }
+        wonderSuffix += ', ';
+        var extraAddedResponseSuffix = randomVar === 1 ? wonderSuffix : '';
         randomResponse = extraAddedResponseSuffix + randomResponse;
 
         respondWithTextMessage(randomResponse.toLowerCase(), payload);
