@@ -4,6 +4,7 @@ var path = require('path');
 
 var AWS = require('aws-sdk');
 const fs = require('fs');
+const Q = require('q');
 
 const request = require('request');
 
@@ -191,8 +192,13 @@ function sendFollowUpAskingForTemplate(recipientId, memeType) {
     var messageText = "Please choose a numbered template from below for the number of sections in your meme";
     var confirmText = "Cool, you've picked the Expanding Brain Meme template!";
     console.log('sending message prompting to choose a template');
-    sendTextMessage(recipientId, confirmText);
-    sendChooseTemplateMessage(recipientId, messageText);
+
+    Q.fcall(sendTextMessage(recipientId, confirmText))
+    .then(sendChooseTemplateMessage(recipientId, messageText))
+    .catch(function (error) {
+      console.log(error);
+    })
+    .done();
   }
 }
 
