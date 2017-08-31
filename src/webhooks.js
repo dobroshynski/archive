@@ -381,9 +381,38 @@ function generateMemeWithTemplate(templateNumber, senderID) {
   });
 }
 
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function isMessageGreeting(messageText) {
+  var text = messageText.toLowerCase();
+  var greetings = ["hello", "hey", "hi", "good day", "good evening","good morning"];
+  if(greetings.indexOf(text) !== -1) {
+    return true;
+  }
+  greetings.forEach(function(greeting) {
+    if(text.includes(greeting)) {
+      return true;
+    }
+  });
+  return false;
+}
+
 function parseTextAndRespond(senderID, messageText) {
   if(messageText.toLowerCase() === "help" || messageText.split(' ').indexOf('help') !== -1) {
-    var responseText = "Need help? No problem! Get started by choosing a meme type from the in-chat menu!";
+    // some randomized responses if the user needs some help in-chat
+    var helpResponses = ["Need help? No problem!", "Hey! Help?", "Help?", "Could I help?", "Stuck?"];
+    var randomResponseIndex = getRandomInt(0, helpResponses.length);
+    var prefixResponse = helpResponses[randomResponseIndex];
+    var responseText = prefixResponse + " Get started by choosing a meme type from the in-chat menu!";
+    sendTextMessage(senderID, responseText);
+  } else if(isMessageGreeting(messageText)){
+    var greetingResponses = ["Hello", "Hey", "Hi", "Hello!", "Hey!", "Hi!", "Hey, how are you?"];
+    var randomResponseIndex = getRandomInt(0, greetingResponses.length);
+    var responseText = greetingResponses[randomResponseIndex];
     sendTextMessage(senderID, responseText);
   } else {
     // echo back the text
