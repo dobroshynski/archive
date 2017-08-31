@@ -405,18 +405,18 @@ function parseTextAndRespond(senderID, messageText) {
   if(messageText.toLowerCase() === "help" || messageText.split(' ').indexOf('help') !== -1) {
     // some randomized responses if the user needs some help in-chat
     var helpResponses = ["Need help? No problem!", "Hey! Help?", "Help?", "Could I help?", "Stuck?"];
-    var randomResponseIndex = getRandomInt(0, helpResponses.length);
-    var prefixResponse = helpResponses[randomResponseIndex];
+    var prefixResponse = helpResponses[getRandomInt(0, helpResponses.length)];
     var responseText = prefixResponse + " Get started by choosing a meme type from the in-chat menu!";
     sendTextMessage(senderID, responseText);
   } else if(isMessageGreeting(messageText)){
     var greetingResponses = ["Hello", "Hey", "Hi", "Hello!", "Hey!", "Hi!", "Hey, how are you?"];
-    var randomResponseIndex = getRandomInt(0, greetingResponses.length);
-    var responseText = greetingResponses[randomResponseIndex];
+    var responseText = greetingResponses[getRandomInt(0, greetingResponses.length)];
     sendTextMessage(senderID, responseText);
   } else {
     // echo back the text
-    sendTextMessage(senderID, messageText);
+    var apologiesResponses = ["Sorry!", "Ugh sorry.", "Oops!", "Uh-oh!", "Hmmm."];
+    var response = apologiesResponses[getRandomInt(0, apologiesResponses.length)] + " I'm still a relatively new bot and only understand a limited amount :/";
+    sendTextMessage(senderID, response);
   }
 }
 
