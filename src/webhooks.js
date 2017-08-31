@@ -188,8 +188,10 @@ function sendMeme(fileURL, recipientId) {
 
 function sendFollowUpAskingForTemplate(recipientId, memeType) {
   if(memeType === "EXPANDING_BRAIN_MEME") {
-    var messageText = "Cool, you've picked the Expanding Brain Meme template! Please choose a numbered template from below for the number of sections in your meme";
+    var messageText = "Please choose a numbered template from below for the number of sections in your meme";
+    var confirmText = "Cool, you've picked the Expanding Brain Meme template!";
     console.log('sending message prompting to choose a template');
+    sendTextMessage(recipientId, confirmText);
     sendChooseTemplateMessage(recipientId, messageText);
   }
 }
