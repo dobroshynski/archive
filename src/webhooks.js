@@ -119,8 +119,10 @@ router.post('/messenger-webhook', function(req, res) {
       entry.messaging.forEach(function(event) {
         if(event.message) {
           if(event.message.quick_reply) {
+            console.log("receivedQuickReplyMessage");
             receivedQuickReplyMessage(event);
           } else {
+            console.log("receivedMessage");
             receivedMessage(event);
           }
         } else if(event.postback) {
@@ -131,6 +133,7 @@ router.post('/messenger-webhook', function(req, res) {
 
           if(payload === "GET_MEME_GENERATION_STARTED_PAYLOAD") {
             // send a welcome message
+            console.log("meme generation started");
             sendWelcomeMessage(event.sender.id);
           } else if(payload === "EXPANDING_BRAIN_MEME_PAYLOAD") {
             // set the meme chosen to be Expanding Brain Meme
@@ -196,7 +199,6 @@ function sendMemeConfirmMessage(recipientId, memeType) {
       console.log('starting new meme for user ' + recipientId + '... added to dictionary of memes');
       memes[recipientId] = meme;
     }
-    markMessageRead(recipientId);
 
     var messageText = "Cool, you've picked the Expanding Brain Meme template";
     var followUpMessage = "Please message the 1/4 blurb of text for your meme";
@@ -239,6 +241,7 @@ function markMessageRead(recipientId) {
     },
     sender_action:"mark_seen"
   };
+  console.log('sending API call to mark the message as read');
   sendAPICall(setMessageReadData);
 }
 
@@ -325,7 +328,6 @@ function receivedQuickReplyMessage(evnt) {
   console.log("received message from quick reply");
   if(quickReply.payload === "EXPANDING_BRAIN_MEME_QUICK_REPLY_PAYLOAD") {
     console.log("user chose expanding brain meme template from quick reply...");
-    markMessageRead(senderID);
     sendMemeConfirmMessage(evnt.sender.id, "EXPANDING_BRAIN_MEME");
   }
 }
@@ -364,7 +366,6 @@ function receivedMessage(evnt) {
 
         var messageText = "Thanks! Please message the 2/4 blurb of text for your meme";
         console.log("sending message asking for next blurb...");
-        markMessageRead(senderID);
         sendTextMessage(senderID, messageText);
       } else if(memeForThisUser.blurbsReceived === 1) {
         memeForThisUser.blurbsReceived++;
@@ -373,7 +374,6 @@ function receivedMessage(evnt) {
 
         var messageText = "Awesome. Please message the 3/4 blurb of text for your meme";
         console.log("sending message asking for next blurb...");
-        markMessageRead(senderID);
         sendTextMessage(senderID, messageText);
       } else if(memeForThisUser.blurbsReceived === 2) {
         memeForThisUser.blurbsReceived++;
@@ -382,7 +382,6 @@ function receivedMessage(evnt) {
 
         var messageText = "Got it. Now please message the 4/4 blurb of text for your meme";
         console.log("sending message asking for next blurb...");
-        markMessageRead(senderID);
         sendTextMessage(senderID, messageText);
       } else if(memeForThisUser.blurbsReceived === 3) {
         // got the 4th blurb
