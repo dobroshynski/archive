@@ -71,40 +71,38 @@
 
       var text = paragraphList[0];
       var text2 = paragraphList[1];
-      var text3 = paragraphList[2];
-      var text4 = paragraphList[3];
 
       var canvas = document.getElementById('canvas');
       var ctx = canvas.getContext('2d');
 
-      canvas.width = 857;
-      canvas.height = 1202;
+      canvas.width = 678;
+      canvas.height = 478;
+
+      ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
       var img = new Image();
-      img.src = '/images/meme-template.jpg';
+      img.src = '/images/meme-template-2.jpg';
 
       img.onload = function(){
         ctx.drawImage(img,0,0);
 
         // fill in the image with text and align
-        var maxWidth = 400;
+        var maxWidth = 320;
         var xOffset = 10;
 
         var textBox1Height = 10;
-        var textBox2Height = 310;
-        var textBox3Height = 620;
-        var textBox4Height = 910;
+        var textBox2Height = 250;
 
         ctx.textBaseline = "top";
 
         // blurb 1 calculations
         var numberOfCharacters = text.length;
-        var fontCalculation = calculateFontForCharacters(numberOfCharacters);
+        var fontCalculation = calculateFontForCharacters(numberOfCharacters) * 0.8;
         var spacingCalculation = fontCalculation * 1.5;
 
         ctx.font = '' + fontCalculation + 'pt Roboto';
 
-        // adjust font calulcation for tex1 to not overflow if large word
+        // adjust font calculation for text1 to not overflow if large word
         if(isOneWord(text) && ctx.measureText(text).width > maxWidth) {
           var length = ctx.measureText(text).width;
           while(length > maxWidth) {
@@ -120,12 +118,12 @@
 
         // blurb 2 calculations
         numberOfCharacters = text2.length;
-        fontCalculation = calculateFontForCharacters(numberOfCharacters);
+        fontCalculation = calculateFontForCharacters(numberOfCharacters) * 0.8;
         spacingCalculation = fontCalculation * 1.5;
 
         ctx.font = '' + fontCalculation + 'pt Roboto';
 
-        // adjust font calulcation for text2 to not overflow if large word
+        // adjust font calculation for text2 to not overflow if large word
         if(isOneWord(text2) && ctx.measureText(text2).width > maxWidth) {
           var length = ctx.measureText(text2).width;
           while(length > maxWidth) {
@@ -139,47 +137,6 @@
         var y2 = textBox2Height;
         wrapText(ctx, text2, x2, y2, maxWidth, spacingCalculation);
 
-        // blurb 3 calculations
-        numberOfCharacters = text3.length;
-        fontCalculation = calculateFontForCharacters(numberOfCharacters);
-        spacingCalculation = fontCalculation * 1.5;
-
-        ctx.font = '' + fontCalculation + 'pt Roboto';
-
-        // adjust font calulcation for text3 to not overflow if large word
-        if(isOneWord(text3) && ctx.measureText(text3).width > maxWidth) {
-          var length = ctx.measureText(text3).width;
-          while(length > maxWidth) {
-            fontCalculation -= 1;
-            ctx.font = '' + fontCalculation + 'pt Roboto';
-            length = ctx.measureText(text3).width;
-          }
-        }
-
-        var x3 = isUpperCase(text3) ? 1 : xOffset;;
-        var y3 = textBox3Height;
-        wrapText(ctx, text3, x3, y3, maxWidth, spacingCalculation);
-
-        // blurb 4 calculations
-        numberOfCharacters = text4.length;
-        fontCalculation = calculateFontForCharacters(numberOfCharacters);
-        spacingCalculation = fontCalculation * 1.5;
-
-        ctx.font = '' + fontCalculation + 'pt Roboto';
-
-        // adjust font calulcation for text4 to not overflow if large word
-        if(isOneWord(text4) && ctx.measureText(text4).width > maxWidth) {
-          var length = ctx.measureText(text4).width;
-          while(length > maxWidth) {
-            fontCalculation -= 1;
-            ctx.font = '' + fontCalculation + 'pt Roboto';
-            length = ctx.measureText(text4).width;
-          }
-        }
-
-        var x4 = isUpperCase(text4) ? 1 : xOffset;;
-        var y4 = textBox4Height;
-        wrapText(ctx, text4, x4, y4, maxWidth, spacingCalculation);
 
         var imageBufferedData = document.getElementById("canvas").toDataURL();
 

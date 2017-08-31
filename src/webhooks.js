@@ -10,10 +10,12 @@ const request = require('request');
 var memes = {}; // dictionary/object of MemeGenerated objects; key = id, value = MemeGenerated
 
 class MemeGenerated {
-  constructor(userID) {
+  constructor(userID, templateNumber) {
     this.userID = userID;
     this.blurbsToGoInMeme = [];
     this.blurbsReceived = 0;
+    this.numberOfBlurbsToExpect = templateNumber;
+    this.isDoneTakingInput = false;
   }
 }
 
@@ -85,13 +87,13 @@ router.get('/get/data/:id', function(req,res) {
 
 // id paramater: id for user that the image is being generated
 // this endpoint gets called by the phantomjs page.open;
-router.get('/generate/meme/:id', function(req, res) {
-  console.log("redirected from phantomjs...");
+router.get('/generate/meme/:templateNumber/:id', function(req, res) {
+  console.log("redirected to template number " + req.params.templateNumber + " from phantomjs...");
   // pass in the id to the call
-  var obj = {id: req.params.id};
-  console.log(path.join(__dirname + '/../web' + '/meme-generate'));
+  var obj = {id: req.params.id, templateNumber: req.params.templateNumber};
+  console.log(path.join(__dirname + '/../web' + ('/meme-generate-' + obj.templateNumber)));
 
-  res.render(path.join(__dirname + '/../web' + '/meme-generate'), obj);
+  res.render(path.join(__dirname + '/../web' + ('/meme-generate-' + obj.templateNumber)), obj);
 });
 
 // authenticate FB messenger webooks
@@ -119,10 +121,8 @@ router.post('/messenger-webhook', function(req, res) {
       entry.messaging.forEach(function(event) {
         if(event.message) {
           if(event.message.quick_reply) {
-            console.log("receivedQuickReplyMessage");
             receivedQuickReplyMessage(event);
           } else {
-            console.log("receivedMessage");
             receivedMessage(event);
           }
         } else if(event.postback) {
@@ -133,12 +133,11 @@ router.post('/messenger-webhook', function(req, res) {
 
           if(payload === "GET_MEME_GENERATION_STARTED_PAYLOAD") {
             // send a welcome message
-            console.log("meme generation started");
             sendWelcomeMessage(event.sender.id);
           } else if(payload === "EXPANDING_BRAIN_MEME_PAYLOAD") {
             // set the meme chosen to be Expanding Brain Meme
             console.log("user picked to generate an expanding brain meme");
-            sendMemeConfirmMessage(event.sender.id, "EXPANDING_BRAIN_MEME");
+            sendFollowUpAskingForTemplate(event.sender.id, "EXPANDING_BRAIN_MEME");
           }
         } else {
           console.log("Webhook received unknown event: ", event);
@@ -156,8 +155,8 @@ function sendMemeBackToUserAndReset(fileURL, senderID) {
 
   var messageText = "Here is your meme!";
 
-  sendMeme(fileURL, senderID);
   sendTextMessage(senderID, messageText);
+  sendMeme(fileURL, senderID);
 }
 
 function sendMeme(fileURL, recipientId) {
@@ -187,32 +186,67 @@ function sendMeme(fileURL, recipientId) {
   sendAPICall(messageData); // sending message first and attachment after
 }
 
-function sendMemeConfirmMessage(recipientId, memeType) {
+function sendFollowUpAskingForTemplate(recipientId, memeType) {
+  if(memeType === "EXPANDING_BRAIN_MEME") {
+    var messageText = "Cool, you've picked the Expanding Brain Meme template! Please choose a numbered template from below for the number of sections in your meme";
+    console.log('sending message prompting to choose a template');
+    sendChooseTemplateMessage(recipientId, messageText);
+  }
+}
+
+function sendMemeConfirmMessage(recipientId, memeType, templateNumber) {
   if(memeType === "EXPANDING_BRAIN_MEME") {
     var memeForThisUser = memes[recipientId]; // try to get the meme from the dictionary
 
     if(memeForThisUser) { // already have meme in progress
 
     } else { // start making a new one
-      var meme = new MemeGenerated(recipientId);
+      var meme = new MemeGenerated(recipientId, templateNumber);
       console.log(meme);
       console.log('starting new meme for user ' + recipientId + '... added to dictionary of memes');
       memes[recipientId] = meme;
     }
 
-    var messageText = "Cool, you've picked the Expanding Brain Meme template";
-    var followUpMessage = "Please message the 1/4 blurb of text for your meme";
+    var messageText = "Great! You've picked the " + templateNumber + "-part template!";
+    var followUpMessage = "Please message the 1/" + templateNumber + " blurb of text for your meme";
     console.log("sending confirm message...");
     sendTextMessage(recipientId, messageText, followUpMessage);
   }
 }
 
 function sendWelcomeMessage(recipientId) {
-  markMessageRead(recipientId);
-
   var messageText = "Welcome! Please choose a type of meme you would like to generate from the in-chat menu";
   console.log("sending welcome message...");
   sendWelcomeTextMessage(recipientId, messageText);
+}
+
+function sendChooseTemplateMessage(recipientId, messageText) {
+  var messageData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      text: messageText,
+      quick_replies:[
+            {
+              content_type:"text",
+              title:"2",
+              payload:"EXPANDING_BRAIN_MEME_PICK_TEMPLATE_NUMBER_PAYLOAD_2"
+            },
+            {
+              content_type:"text",
+              title:"3",
+              payload:"EXPANDING_BRAIN_MEME_PICK_TEMPLATE_NUMBER_PAYLOAD_3"
+            },
+            {
+              content_type:"text",
+              title:"4",
+              payload:"EXPANDING_BRAIN_MEME_PICK_TEMPLATE_NUMBER_PAYLOAD_4"
+            }
+          ]
+    }
+  };
+  sendAPICall(messageData);
 }
 
 function sendWelcomeTextMessage(recipientId, messageText) {
@@ -232,17 +266,6 @@ function sendWelcomeTextMessage(recipientId, messageText) {
     }
   };
   sendAPICall(messageData);
-}
-
-function markMessageRead(recipientId) {
-  var setMessageReadData = {
-    recipient:{
-      id: recipientId
-    },
-    sender_action:"mark_seen"
-  };
-  console.log('sending API call to mark the message as read');
-  sendAPICall(setMessageReadData);
 }
 
 function setTypingOff(recipientId) {
@@ -328,8 +351,33 @@ function receivedQuickReplyMessage(evnt) {
   console.log("received message from quick reply");
   if(quickReply.payload === "EXPANDING_BRAIN_MEME_QUICK_REPLY_PAYLOAD") {
     console.log("user chose expanding brain meme template from quick reply...");
-    sendMemeConfirmMessage(evnt.sender.id, "EXPANDING_BRAIN_MEME");
+    sendFollowUpAskingForTemplate(evnt.sender.id, "EXPANDING_BRAIN_MEME");
+  } else if(quickReply.payload === "EXPANDING_BRAIN_MEME_PICK_TEMPLATE_NUMBER_PAYLOAD_2") {
+    console.log("user chose a particular number template from quick reply");
+    sendMemeConfirmMessage(evnt.sender.id, "EXPANDING_BRAIN_MEME", 2);
+  } else if(quickReply.payload === "EXPANDING_BRAIN_MEME_PICK_TEMPLATE_NUMBER_PAYLOAD_3") {
+    console.log("user chose a particular number template from quick reply");
+    sendMemeConfirmMessage(evnt.sender.id, "EXPANDING_BRAIN_MEME", 3);
+  } else if(quickReply.payload === "EXPANDING_BRAIN_MEME_PICK_TEMPLATE_NUMBER_PAYLOAD_4") {
+    console.log("user chose a particular number template from quick reply");
+    sendMemeConfirmMessage(evnt.sender.id, "EXPANDING_BRAIN_MEME", 4);
   }
+}
+
+// open a headless browser window here and generate the meme
+function generateMemeWithTemplate(templateNumber, senderID) {
+  var phantomURL = process.env.PHANTOM_URL;
+
+  phantomURL = phantomURL + '/generate/meme/' + templateNumber + '/' + senderID;
+
+  var phantomjs = require('phantomjs-prebuilt');
+  var program = phantomjs.exec('/app/src/phantom-script.js', phantomURL);
+
+  program.stdout.pipe(process.stdout);
+  program.stderr.pipe(process.stderr);
+  program.on('exit', code => {
+    console.log("node: phantom script exited..." + code);
+  });
 }
 
 function receivedMessage(evnt) {
@@ -364,26 +412,48 @@ function receivedMessage(evnt) {
 
         console.log("added text to array; blurbs recieved: " + memeForThisUser.blurbsReceived);
 
-        var messageText = "Thanks! Please message the 2/4 blurb of text for your meme";
+        var messageText = "Thanks! Please message the 2/" + memeForThisUser.numberOfBlurbsToExpect + " blurb of text for your meme";
         console.log("sending message asking for next blurb...");
         sendTextMessage(senderID, messageText);
-      } else if(memeForThisUser.blurbsReceived === 1) {
+      } else if(memeForThisUser.blurbsReceived === 1 && !memeForThisUser.isDoneTakingInput) {
         memeForThisUser.blurbsReceived++;
         memeForThisUser.blurbsToGoInMeme.push(messageText);
         console.log("added text to array; blurbs recieved: " + memeForThisUser.blurbsReceived);
 
-        var messageText = "Awesome. Please message the 3/4 blurb of text for your meme";
-        console.log("sending message asking for next blurb...");
-        sendTextMessage(senderID, messageText);
-      } else if(memeForThisUser.blurbsReceived === 2) {
+        if(memeForThisUser.blurbsReceived === memeForThisUser.numberOfBlurbsToExpect) {
+          memeForThisUser.isDoneTakingInput = true;
+          // generate the meme now
+          // send message informing the user the meme is being generated
+          var messageText = "Thanks! Your meme is currently being generated";
+          sendTextMessageAndSetTypingOn(senderID, messageText);
+
+          // open a headless browser window here and generate the meme
+          generateMemeWithTemplate(2, senderID);
+        } else {
+          var messageText = "Awesome. Please message the 3/" + memeForThisUser.numberOfBlurbsToExpect + " blurb of text for your meme";
+          console.log("sending message asking for next blurb...");
+          sendTextMessage(senderID, messageText);
+        }
+      } else if(memeForThisUser.blurbsReceived === 2 && !memeForThisUser.isDoneTakingInput) {
         memeForThisUser.blurbsReceived++;
         memeForThisUser.blurbsToGoInMeme.push(messageText);
         console.log("added text to array; blurbs recieved: " + memeForThisUser.blurbsReceived);
 
-        var messageText = "Got it. Now please message the 4/4 blurb of text for your meme";
-        console.log("sending message asking for next blurb...");
-        sendTextMessage(senderID, messageText);
-      } else if(memeForThisUser.blurbsReceived === 3) {
+        if(memeForThisUser.blurbsReceived === memeForThisUser.numberOfBlurbsToExpect) {
+          memeForThisUser.isDoneTakingInput = true;
+          // generate the meme now
+          // send message informing the user the meme is being generated
+          var messageText = "Thanks! Your meme is currently being generated";
+          sendTextMessageAndSetTypingOn(senderID, messageText);
+
+          // open a headless browser window here and generate the meme
+          generateMemeWithTemplate(3, senderID);
+        } else {
+          var messageText = "Got it. Now please message the 4/" + memeForThisUser.numberOfBlurbsToExpect + " blurb of text for your meme";
+          console.log("sending message asking for next blurb...");
+          sendTextMessage(senderID, messageText);
+        }
+      } else if(memeForThisUser.blurbsReceived === 3 && !memeForThisUser.isDoneTakingInput) {
         // got the 4th blurb
         memeForThisUser.blurbsReceived++;
         memeForThisUser.blurbsToGoInMeme.push(messageText);
@@ -391,26 +461,13 @@ function receivedMessage(evnt) {
         console.log("array currently:");
         console.log(memeForThisUser.blurbsToGoInMeme);
 
-        // mark the message read
-        markMessageRead(senderID);
-
         // send message informing the user the meme is being generated
         var messageText = "Thanks! Your meme is currently being generated";
         sendTextMessageAndSetTypingOn(senderID, messageText);
 
         // open a headless browser window here and generate the meme
+        generateMemeWithTemplate(4, senderID);
 
-        var phantomURL = process.env.PHANTOM_URL;
-        phantomURL = phantomURL + '/generate/meme/' + senderID;
-
-        var phantomjs = require('phantomjs-prebuilt');
-        var program = phantomjs.exec('/app/src/phantom-script.js', phantomURL);
-
-        program.stdout.pipe(process.stdout);
-        program.stderr.pipe(process.stderr);
-        program.on('exit', code => {
-          console.log("node: phantom script exited..." + code);
-        });
         res.sendStatus(200);
       }
     }
