@@ -413,9 +413,10 @@ function parseTextAndRespond(senderID, messageText) {
     var responseText = greetingResponses[getRandomInt(0, greetingResponses.length)];
     sendTextMessage(senderID, responseText);
   } else {
-    // echo back the text
+    // respond with a randomized combination for text the bot can't understand how to interpret yet
     var apologiesResponses = ["Sorry!", "Ugh sorry.", "Oops!", "Uh-oh!", "Hmmm."];
-    var response = apologiesResponses[getRandomInt(0, apologiesResponses.length)] + " I'm still a relatively new bot and only understand a limited amount :/";
+    var explainResponses = ["I'm still a relatively new bot and only understand a limited amount :/", "I didn't get that :(", "I'm still learning, not sure I understand that yet! :/", "Not sure I understand...", "Didn't catch that :/"];
+    var response = apologiesResponses[getRandomInt(0, apologiesResponses.length)] + " " + explainResponses[getRandomInt(0, explainResponses.length)];
     sendTextMessage(senderID, response);
   }
 }
