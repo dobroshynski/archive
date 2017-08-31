@@ -382,6 +382,16 @@ function generateMemeWithTemplate(templateNumber, senderID) {
   });
 }
 
+function parseTextAndRespond(senderID, messageText) {
+  if(messageText.toLowerCase() === "help" || messageText.split(' ').indexOf('help') !== -1) {
+    var responseText = "Need help? No problem! Get started by choosing a meme type from the in-chat menu!";
+    sendTextMessage(senderID, responseText);
+  } else {
+    // echo back the text
+    sendTextMessage(senderID, messageText);
+  }
+}
+
 function receivedMessage(evnt) {
   var senderID = evnt.sender.id;
   var recipientID = evnt.recipient.id;
@@ -398,7 +408,7 @@ function receivedMessage(evnt) {
   if(messageText) {
     if(!memes[senderID]) { // there is no currently generating meme for the current user
       // echo back the text for now
-      sendTextMessage(senderID, messageText);
+      parseTextAndRespond(senderID, messageText);
     } else {
       // currently in progress of generating a meme and received some text
 
