@@ -401,6 +401,23 @@ function isMessageGreeting(messageText) {
   return false;
 }
 
+function isMessageGratitude(messageText) {
+  var text = messageText.toLowerCase();
+  var gratitudes = ["thank you", "thanks", "appreciate it"];
+  if(gratitudes.indexOf(text) !== -1) {
+    return true;
+  }
+  if(messageText.split(' ').indexOf('thanks') !== -1) {
+    return true;
+  }
+  gratitudes.forEach(function(message) {
+    if(text.includes(message)) {
+      return true;
+    }
+  });
+  return false;
+}
+
 function parseTextAndRespond(senderID, messageText) {
   if(messageText.toLowerCase() === "help" || messageText.split(' ').indexOf('help') !== -1) {
     // some randomized responses if the user needs some help in-chat
@@ -408,10 +425,15 @@ function parseTextAndRespond(senderID, messageText) {
     var prefixResponse = helpResponses[getRandomInt(0, helpResponses.length)];
     var responseText = prefixResponse + " Get started by choosing a meme type from the in-chat menu!";
     sendTextMessage(senderID, responseText);
-  } else if(isMessageGreeting(messageText)){
+  } else if(isMessageGreeting(messageText)) {
     var greetingResponses = ["Hello", "Hey", "Hi", "Hello!", "Hey!", "Hi!", "Hey, how are you?"];
     var responseText = greetingResponses[getRandomInt(0, greetingResponses.length)];
     sendTextMessage(senderID, responseText);
+  } else if(isMessageGratitude(messageText) {
+    var gratitudeResponses = ["No problem", "Happy to help", "Glad I could help", "Always happy to help", "You got it"];
+    var response = gratitudeResponses[getRandomInt(0, gratitudeResponses.length)];
+    var extraResponse = getRandomInt(0, 1) === 0 ? "!" : " :)";
+    sendTextMessage(senderID, response + extraResponse);
   } else {
     // respond with a randomized combination for text the bot can't understand how to interpret yet
     var apologiesResponses = ["Sorry!", "Ugh sorry.", "Oops!", "Uh-oh!", "Hmmm."];
