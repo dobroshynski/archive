@@ -1,20 +1,30 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.swing.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
-public class JuliaSet extends JPanel {
+public class JuliaSet extends JPanel implements MouseMotionListener {
     private final int maxIter = 100;
     private final double zoom = 1;
     private double cX;
     private double cY;
 
+    public void mouseMoved(MouseEvent e) {
+       System.out.println("X : " + e.getX());
+       System.out.println("Y : " + e.getY());
+    }
 
+    public void mouseDragged(MouseEvent e) {
+      System.out.println(e.getY());
+    }
 
     public JuliaSet(double a, double b) {
         setPreferredSize(new Dimension(800, 600));
         setBackground(Color.white);
         cX = a;
         cY = b;
+        addMouseMotionListener(this);
     }
 
     void drawJuliaSet(Graphics2D g) {
@@ -23,11 +33,6 @@ public class JuliaSet extends JPanel {
         BufferedImage image = new BufferedImage(w, h,
                 BufferedImage.TYPE_INT_RGB);
 
-        // cX = -0.7;
-        // cY = 0.27015;
-
-
-          // System.out.println("running");
           double moveX = 0, moveY = 0;
           double zx, zy;
 
@@ -76,24 +81,9 @@ public class JuliaSet extends JPanel {
             // double b = -0.8;
             double a = Double.parseDouble(args[0]);
             double b = Double.parseDouble(args[1]);
-            // while(a < 0 && b > 0) {
-            //
-            //   f.add(new JuliaSet(a,b), BorderLayout.CENTER);
-            //   f.pack();
-            //   f.setLocationRelativeTo(null);
-            //   f.validate();
-            //   f.repaint();
-            //   f.setVisible(true);
-            //   a += 0.001;
-            //   b -= 0.001;
-            //   final Timer timer = new Timer(1000, null);
-            //   timer.start();
-            // }
-
 
             f.add(new JuliaSet(a,b), BorderLayout.CENTER);
-            // f.validate();
-            // f.repaint();
+
             f.pack();
             f.setLocationRelativeTo(null);
             f.setVisible(true);
