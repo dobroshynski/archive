@@ -429,7 +429,7 @@ function parseTextAndRespond(senderID, messageText) {
     var greetingResponses = ["Hello", "Hey", "Hi", "Hello!", "Hey!", "Hi!", "Hey, how are you?"];
     var responseText = greetingResponses[getRandomInt(0, greetingResponses.length)];
     sendTextMessage(senderID, responseText);
-  } else if(isMessageGratitude(messageText) {
+  } else if(isMessageGratitude(messageText)) {
     var gratitudeResponses = ["No problem", "Happy to help", "Glad I could help", "Always happy to help", "You got it"];
     var response = gratitudeResponses[getRandomInt(0, gratitudeResponses.length)];
     var extraResponse = getRandomInt(0, 1) === 0 ? "!" : " :)";
