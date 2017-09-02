@@ -1,30 +1,37 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.swing.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseWheelListener;
-import java.awt.event.MouseWheelEvent;
+import java.awt.event.*;
 
 public class JuliaSet extends JPanel implements MouseMotionListener, MouseListener, MouseWheelListener {
     private final int maxIter = 100;
-    private double zoom = 1;
-    private double cX;
-    private double cY;
+    private static double zoom = 1;
+    private static double cX;
+    private static double cY;
 
     private double current = 1;
 
     private Point start;
 
-    private double offsetX = 0;
-    private double offsetY = 0;
+    private static double offsetX = 0;
+    private static double offsetY = 0;
 
-    private double dxOffset = 0;
-    private double dyOffset = 0;
+    private static double dxOffset = 0;
+    private static double dyOffset = 0;
 
     private static double WINDOW_WIDTH;
     private static double WINDOW_HEIGHT;
+
+    private static JFrame f;
+
+    private static JPanel panel;
+    private static JLabel equationLabel;
+    private static JLabel aLabel;
+    private static JTextField aField;
+    private static JLabel bLabel;
+    private static JTextField bField;
+    private static JButton updateEquationButton;
+    private static JLabel equationDisplay;
 
     private boolean debug = false;
 
@@ -142,30 +149,95 @@ public class JuliaSet extends JPanel implements MouseMotionListener, MouseListen
         drawJuliaSet(g);
     }
 
+    // tries to update to new parameters if valid
+    private static void tryToUpdateEquation(String aFieldText, String bFieldText) {
+      try {
+        cX = Double.parseDouble(aFieldText);
+        cY = Double.parseDouble(bFieldText);
+        equationDisplay.setText("[c = " + cX + " + " + cY + "i]");
+      } catch (NumberFormatException exception) {
+        System.out.println("error parsing new values");
+      }
+    }
+
+    // resets the JFrame to draw a new set
+    private static void resetFrame() {
+      zoom = 1;
+      dxOffset = 0;
+      dyOffset = 0;
+      offsetX = 0;
+      offsetY = 0;
+
+      if(!aField.getText().equals("") && !bField.getText().equals("")) {
+        tryToUpdateEquation(aField.getText(), bField.getText());
+        f.revalidate();
+        f.repaint();
+      }
+    }
+
+    // sets up JPanel UI for easier set equation customization
+    private static void setUpUI() {
+      panel = new JPanel();
+      equationLabel = new JLabel("Equation Setup | ");
+      equationLabel.setFont(equationLabel.getFont().deriveFont(equationLabel.getFont().getStyle() ^ Font.BOLD));
+
+      aLabel = new JLabel("a:");
+      aField = new JTextField(4);
+      bLabel = new JLabel("b:");
+      bField = new JTextField(4);
+
+      equationDisplay = new JLabel("[c = " + cX + " + " + cY + "i]");
+      equationDisplay.setFont(equationDisplay.getFont().deriveFont(equationDisplay.getFont().getStyle() ^ Font.BOLD));
+
+      updateEquationButton = new JButton("Update");
+
+      updateEquationButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e){
+          resetFrame();
+        }
+      });
+
+      panel.add(equationLabel);
+      panel.add(aLabel);
+      panel.add(aField);
+      panel.add(bLabel);
+      panel.add(bField);
+      panel.add(updateEquationButton);
+      panel.add(equationDisplay);
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame f = new JFrame();
+      SwingUtilities.invokeLater(() -> {
+          f = new JFrame();
 
-            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            f.setTitle("Java Fractals");
-            f.setResizable(false);
+          f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+          f.setTitle("Java Fractals");
+          f.setResizable(false);
 
-            if(args.length != 2) {
-              System.out.println("Error: incorrect number of arguments. Expected: 2, Given: " + args.length);
-              System.exit(1);
+          // set to have some default
+          double a = -0.61803398875;
+          double b = 0.0;
+
+          if(args.length == 2) {
+            try {
+              a = Double.parseDouble(args[0]);
+              b = Double.parseDouble(args[1]);
+            } catch(Exception ex) {
+              System.out.println("Custom initialization failed: Invalid command line arguments format. Expected: Double");
             }
+          }
 
-            double a = Double.parseDouble(args[0]);
-            double b = Double.parseDouble(args[1]);
+          f.add(new JuliaSet(a,b), BorderLayout.CENTER);
 
-            f.add(new JuliaSet(a,b), BorderLayout.CENTER);
+          f.pack();
+          f.setLocationRelativeTo(null);
+          f.setVisible(true);
 
-            f.pack();
-            f.setLocationRelativeTo(null);
-            f.setVisible(true);
+          WINDOW_WIDTH = f.getContentPane().getSize().width;
+          WINDOW_HEIGHT = f.getContentPane().getSize().height;
 
-            WINDOW_WIDTH = f.getContentPane().getSize().width;
-            WINDOW_HEIGHT = f.getContentPane().getSize().height;
-        });
+          setUpUI();
+          f.add(panel, BorderLayout.NORTH);
+      });
     }
 }
