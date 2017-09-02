@@ -3,28 +3,106 @@ import java.awt.image.BufferedImage;
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseWheelListener;
+import java.awt.event.MouseWheelEvent;
 
-public class JuliaSet extends JPanel implements MouseMotionListener {
+public class JuliaSet extends JPanel implements MouseMotionListener, MouseListener, MouseWheelListener {
     private final int maxIter = 100;
-    private final double zoom = 1;
+    private double zoom = 1;
     private double cX;
     private double cY;
 
-    public void mouseMoved(MouseEvent e) {
-       System.out.println("X : " + e.getX());
-       System.out.println("Y : " + e.getY());
+    private double current = 1;
+
+    private Point start;
+
+    private double offsetX = 0;
+    private double offsetY = 0;
+
+    private double dxOffset = 0;
+    private double dyOffset = 0;
+
+    private static double WINDOW_WIDTH;
+    private static double WINDOW_HEIGHT;
+
+    private boolean debug = false;
+
+    private void updateFrame() {
+      revalidate();
+      repaint();
     }
 
+    public void mouseWheelMoved(MouseWheelEvent e) {
+      if(debug) {
+        System.out.println("scrolled: " + e.getUnitsToScroll());
+        System.out.println(e.getScrollType());
+      }
+
+      zoom += e.getUnitsToScroll() * (zoom / 100.0);
+      if(zoom < 0.5) {
+        zoom = 0.5;
+      }
+      if(debug) System.out.println("zoom: " + zoom);
+
+      updateFrame();
+    }
+
+    public void mouseReleased(MouseEvent e) {
+      if(debug) {
+        System.out.println("mouse released @ point [" + e.getX() + ", " + e.getY() + "]");
+      }
+      start = e.getPoint();
+      dxOffset += offsetX;
+      dyOffset += offsetY;
+      offsetX = 0;
+      offsetY = 0;
+
+      updateFrame();
+    }
+
+    // required overrides
+    public void mouseExited(MouseEvent e) {}
+
+    public void mouseEntered(MouseEvent e) {}
+
+    public void mouseClicked(MouseEvent e) {}
+
+    public void mouseMoved(MouseEvent e) {}
+
+    // triggered when mouse is pressed on JFrame
+    public void mousePressed(MouseEvent e) {
+      start = e.getPoint();
+      if(debug) {
+        System.out.println("mouse pressed @ point: " + start);
+        System.out.println();
+      }
+    }
+
+    // triggered when mouse is dragged across JFrame
     public void mouseDragged(MouseEvent e) {
-      System.out.println(e.getY());
+      if(start != null) {
+        Point currentPoint = e.getPoint();
+        double dx = (start.getX() - currentPoint.getX());
+        double dy = start.getY() - currentPoint.getY();
+
+        if(debug) System.out.println("dx: " + dx + ", dy: " + dy);
+
+        offsetX = dx / 800.0 / zoom;
+        offsetY = dy / 600.0 / zoom;
+      }
+      updateFrame();
     }
 
+    // constructor
     public JuliaSet(double a, double b) {
         setPreferredSize(new Dimension(800, 600));
         setBackground(Color.white);
         cX = a;
         cY = b;
         addMouseMotionListener(this);
+        addMouseWheelListener(this);
+        this.addMouseListener(this);
     }
 
     void drawJuliaSet(Graphics2D g) {
@@ -33,7 +111,8 @@ public class JuliaSet extends JPanel implements MouseMotionListener {
         BufferedImage image = new BufferedImage(w, h,
                 BufferedImage.TYPE_INT_RGB);
 
-          double moveX = 0, moveY = 0;
+          double moveX = dxOffset + offsetX;
+          double moveY = dyOffset + offsetY;
           double zx, zy;
 
           for (int x = 0; x < w; x++) {
@@ -51,12 +130,7 @@ public class JuliaSet extends JPanel implements MouseMotionListener {
                   image.setRGB(x, y, c);
               }
           }
-          System.out.println(image);
           g.drawImage(image, 0, 0, null);
-    }
-
-    public void update(Graphics g){
-
     }
 
     @Override
@@ -87,6 +161,9 @@ public class JuliaSet extends JPanel implements MouseMotionListener {
             f.pack();
             f.setLocationRelativeTo(null);
             f.setVisible(true);
+
+            WINDOW_WIDTH = f.getContentPane().getSize().width;
+            WINDOW_HEIGHT = f.getContentPane().getSize().height;
         });
     }
 }
