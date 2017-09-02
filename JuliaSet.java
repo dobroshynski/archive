@@ -147,12 +147,14 @@ public class JuliaSet extends JPanel implements MouseMotionListener, MouseListen
             JFrame f = new JFrame();
 
             f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            f.setTitle("Julia Set");
+            f.setTitle("Java Fractals");
             f.setResizable(false);
 
-            // defaults for testing
-            // double a = 0;
-            // double b = -0.8;
+            if(args.length != 2) {
+              System.out.println("Error: incorrect number of arguments. Expected: 2, Given: " + args.length);
+              System.exit(1);
+            }
+
             double a = Double.parseDouble(args[0]);
             double b = Double.parseDouble(args[1]);
 
