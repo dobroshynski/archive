@@ -19,9 +19,6 @@ public class JuliaSet extends JPanel implements MouseMotionListener, MouseListen
     private static double dxOffset = 0;
     private static double dyOffset = 0;
 
-    private static double WINDOW_WIDTH;
-    private static double WINDOW_HEIGHT;
-
     private static JFrame f;
 
     private static JPanel panel;
@@ -232,9 +229,6 @@ public class JuliaSet extends JPanel implements MouseMotionListener, MouseListen
           f.pack();
           f.setLocationRelativeTo(null);
           f.setVisible(true);
-
-          WINDOW_WIDTH = f.getContentPane().getSize().width;
-          WINDOW_HEIGHT = f.getContentPane().getSize().height;
 
           setUpUI();
           f.add(panel, BorderLayout.NORTH);
