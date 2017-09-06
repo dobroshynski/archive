@@ -11,3 +11,5 @@ a tool for graphing and viewing different fractals
 - Some sample sets to try out:
   - java JuliaSet 0.5 -0.02
   - java JuliaSet 0.33 0.000052
+  - java JuliaSet 0.285 0.01
+  - java JuliaSet 0.8 0.156
