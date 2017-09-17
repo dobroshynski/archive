@@ -112,8 +112,8 @@ router.post('/event', function(req,res) {
     var concatDate = tokens[0] + ' ' + tokens[1] + ' ' + tokens[2] + ' ' + tokens[3];
 
     var logFileTitle = "Log | " + concatDate + " | Channel: #" + channels[payload.event.channel] + "\n\n";
-    var todaysLogFileName = "log-" + date.getMonth() + "-" + date.getDate() + "-" + date.getFullYear() + "-#" + channels[payload.event.channel];
-    var todayFolderGroup = "logs-" + date.getMonth() + "-" + date.getDate() + "-" + date.getFullYear();
+    var todaysLogFileName = "log-" + (date.getMonth() + 1) + "-" + date.getDate() + "-" + date.getFullYear() + "-#" + channels[payload.event.channel];
+    var todayFolderGroup = "logs-" + (date.getMonth() + 1) + "-" + date.getDate() + "-" + date.getFullYear();
 
     if(debug) {
       console.log("todays log file name: " + todaysLogFileName);
