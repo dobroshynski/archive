@@ -1,2 +1,2 @@
 # slack-logger
-Log conversations from a particular Slack channel as a Slack App integration
+Log conversations from all Slack channels as a Slack App integration
