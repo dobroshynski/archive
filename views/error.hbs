@@ -1,3 +1,14 @@
-<h1>{{message}}</h1>
-<h2>{{error.status}}</h2>
-<pre>{{error.stack}}</pre>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AIT Repo Closer</title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<div class="container">
+  <div class="spacer"></div>
+  <h1 class="heading">
+    {{error.status}}: {{message}}
+  </h1>
+  <div class="spacer"></div>
+</div>
+</html>
