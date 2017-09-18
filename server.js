@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var request = require('request');
 
 var webhooks = require('./src/webhooks');
 
@@ -15,6 +16,16 @@ if(testing) {
 
   ngrok.connect(3000, function (err, url) {
     console.log('connected on: ' + url);
+
+    request(url + '/data', function (error, response, body) {
+      console.log('status on data load from server:', response && response.statusCode); // Print the response status code if a response was received
+      console.log(body);
+    });
+  });
+} else {
+  request(process.env.DEPLOYED_URL + '/data', function (error, response, body) {
+    console.log('status on data load from server:', response && response.statusCode); // Print the response status code if a response was received
+    console.log(body);
   });
 }
 
