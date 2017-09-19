@@ -34,9 +34,11 @@
       </a>
     </div>
     <div class="spacer"></div>
+    {{#if isNotEmpty}}
     <div class="wrapper-transparent">
       Scheduled repo closings
     </div>
+    {{/if}}
     {{#each schedules as |singleSchedule|}}
     <div class="wrapper">
       <div class="scheduled-summary stretched-wrapper">
