@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <title>AIT Repo Closer</title>
+  <script src="https://use.fontawesome.com/ac6e918b68.js"></script>
+  <script src="/javascripts/main.js"></script>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+  <form method="POST" action="/confirm-update">
+  <div class="container">
+    <div class="top-buttons">
+      <a href="/">
+      <div class="white-button spaced">
+        <button type="button">Close Repos</button>
+      </div>
+      </a>
+      <span class="separator-button"></span>
+      <a href="/scheduled/view">
+      <div class="white-button spaced">
+        <button type="button">View Scheduled</button>
+      </div>
+      </a>
+      <span class="separator-button"></span>
+      <a href="/scheduled/edit">
+      <div class="white-button spaced">
+        <button type="button">Edit Scheduled</button>
+      </div>
+      </a>
+      <span class="separator-button"></span>
+      <a href="/scheduled/delete">
+      <div class="white-button spaced">
+        <button type="button">Delete</button>
+      </div>
+      </a>
+    </div>
+    <div class="spacer"></div>
+    <div class="wrapper-transparent">
+      Edit the scheduled repo closing
+    </div>
+    <div class="wrapper">
+      <div class="scheduled-summary">
+        <div class="info"> <i class="fa fa-github" aria-hidden="true"></i> <input class="edit-scheduled padded" type="text" name="organizationNameEdited" value="{{organizationName}}" readonly></input></div>
+        <hr>
+        <div class="info"> <i class="fa fa-folder" aria-hidden="true"></i> <input class="edit-scheduled padded" type="text" name="homeworkNameEdited" value="{{homeworkName}}" readonly></input></div>
+        <hr>
+        <div class="info"> <i class="fa fa-calendar-o" aria-hidden="true"></i> <input class="edit-scheduled" type="date" name="submissionDateEdited" value="{{dateToClose}}" required></input><i class="fa fa-pencil" aria-hidden="true"></i></div>
+        <hr>
+        <div class="info"> <i class="fa fa-clock-o" aria-hidden="true"></i> <input class="edit-scheduled" type="time" name="submissionTimeEdited" value="{{timeToClose}}" required></input><i class="fa fa-pencil" aria-hidden="true"></i></div>
+      </div>
+    </div>
+    <div class="separator"></div>
+    <div class="white-button spaced">
+      <button type="submit">Update</button>
+    </div>
+    <div class="spacer"></div>
+  </div>
+  </form>
+</body>
+</html>

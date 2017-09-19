@@ -6,29 +6,63 @@
   <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
 <body>
+  <form method="POST" action="/confirm">
   <div class="container">
     <!-- <h1 class="heading">
       AIT Repo Closer
     </h1> -->
+    <div class="top-buttons">
+      <a href="/">
+      <div class="white-button spaced">
+        <button type="button">Close Repos</button>
+      </div>
+      </a>
+      <span class="separator-button"></span>
+      <a href="/scheduled/view">
+      <div class="white-button spaced">
+        <button type="button">View Scheduled</button>
+      </div>
+      </a>
+      <span class="separator-button"></span>
+      <a href="/scheduled/edit">
+      <div class="white-button spaced">
+        <button type="button">Edit Scheduled</button>
+      </div>
+      </a>
+      <span class="separator-button"></span>
+      <a href="/scheduled/delete">
+      <div class="white-button spaced">
+        <button type="button">Delete</button>
+      </div>
+      </a>
+    </div>
     <div class="spacer"></div>
+    <div class="wrapper-transparent">
+      Repo closing set up
+    </div>
     <div class="wrapper">
-      <input class="" type="text" placeholder="Which homework to close?"></input>
-      <button type="submit"><i class="icon fa fa-folder" aria-hidden="true"></i></button>
+      <input class="" type="text" name="organizationName" placeholder="Which organization to close for?" required></input>
+      <button type="button"><i class="fa fa-github" aria-hidden="true"></i></button>
     </div>
     <div class="separator"></div>
     <div class="wrapper">
-      <input class="" type="date" placeholder="What date?"></input>
-      <button type="submit"><i class="icon fa fa-calendar-o" aria-hidden="true"></i></button>
+      <input class="" type="text" name="homeworkName" placeholder="Which homework to close?" required></input>
+      <button type="button"><i class="fa fa-folder" aria-hidden="true"></i></button>
     </div>
     <div class="separator"></div>
     <div class="wrapper">
-      <input class="" type="time" placeholder="What time?"></input>
-      <button type="submit"><i class="icon fa fa-clock-o" aria-hidden="true"></i></button>
+      <input class="" type="date" name="closingDate" placeholder="What date?" required></input>
+      <button type="button"><i class="fa fa-calendar-o" aria-hidden="true"></i></button>
     </div>
     <div class="separator"></div>
     <div class="wrapper">
-      <input class="" type="password" placeholder="Password"></input>
-      <button type="submit"><i class="icon fa fa-lock" aria-hidden="true"></i></button>
+      <input class="" type="time" name="closingTime" placeholder="What time?" required></input>
+      <button type="button"><i class="fa fa-clock-o" aria-hidden="true"></i></button>
+    </div>
+    <div class="separator"></div>
+    <div class="wrapper">
+      <input class="" type="password" name="password" placeholder="Password" required></input>
+      <button type="button"><i class="fa fa-lock" aria-hidden="true"></i></button>
     </div>
     <div class="separator"></div>
     <div class="submit-button">
@@ -36,5 +70,6 @@
     </div>
     <div class="spacer"></div>
   </div>
+  </form>
 </body>
 </html>
