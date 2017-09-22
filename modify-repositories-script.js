@@ -1,3 +1,14 @@
+/*
+  Directions to run:
+
+    node modify-repositories-script.js [action type] [organization name] [repository suffix] [GitHub API Token]
+
+    -> where [action type] is either 'close' or 'open', to revert the close
+
+  The script goes through a file called 'students' in the same directory and closes repositories in organization matching team names from the file and inputed
+  [repository prefix]
+*/
+
 var fs = require('fs');
 var path = require('path');
 

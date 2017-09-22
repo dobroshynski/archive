@@ -1,6 +1,11 @@
 var express = require('express');
 var router = express.Router();
 var schedule = require('node-schedule');
+var childProcess = require('child_process');
+var fs = require('fs');
+var path = require('path');
+
+var config = JSON.parse(fs.readFileSync(path.join(__dirname, '/../config.json')));
 
 require('../db');
 
@@ -8,6 +13,11 @@ require('../db');
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 const ScheduledRepoClosing = mongoose.model('ScheduledRepoClosing');
+
+function closeRepositories(action, orgName, repoName, apiToken) {
+  var args = [action, orgName, repoName, apiToken];
+  childProcess.fork(__dirname + '/../modify-repositories-script.js', args);
+}
 
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
