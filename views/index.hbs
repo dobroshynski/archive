@@ -37,6 +37,11 @@
       </a>
     </div>
     <div class="spacer"></div>
+    {{#if shouldDisplayError}}
+    <div class="wrapper-transparent-error-message">
+      Error: Invalid Key
+    </div>
+    {{/if}}
     <div class="wrapper-transparent">
       Repo closing set up
     </div>
@@ -61,7 +66,7 @@
     </div>
     <div class="separator"></div>
     <div class="wrapper">
-      <input class="" type="password" name="password" placeholder="Password" required></input>
+      <input class="" type="password" name="password" placeholder="Key" required></input>
       <button type="button"><i class="fa fa-lock" aria-hidden="true"></i></button>
     </div>
     <div class="separator"></div>

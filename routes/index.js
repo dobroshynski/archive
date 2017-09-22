@@ -20,7 +20,8 @@ function closeRepositories(action, orgName, repoName, apiToken) {
 }
 
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  var obj = {'shouldDisplayError': false}
+  res.render('index', obj);
 });
 
 router.post('/confirm', function(req,res) {
@@ -32,38 +33,49 @@ router.post('/confirm', function(req,res) {
   var closingDate = req.body.closingDate;
   var closingTime = req.body.closingTime;
 
-  var date = new Date(closingDate + " " + closingTime);
-  var localeDateString = date.toLocaleString();
-  var dateTokenized = localeDateString.split(',');
+  var apiKey = req.body.password;
+  var storedToken = config.token;
 
+  if(storedToken === apiKey) {
+      var date = new Date(closingDate + " " + closingTime);
+      var localeDateString = date.toLocaleString();
+      var dateTokenized = localeDateString.split(',');
 
-  const scheduledRepoClosing = new ScheduledRepoClosing({
-    organization: organizationName,
-    homeworkPrefix: homeworkName,
-    closeAt: date
-  });
+      const scheduledRepoClosing = new ScheduledRepoClosing({
+        organization: organizationName,
+        homeworkPrefix: homeworkName,
+        closeAt: date
+      });
 
-  scheduledRepoClosing.save(function(err,object,count){
-    if(err){
-      res.send(err);
-    } else {
-      console.log("successfully added a scheduled repo closing object to database with id " + object._id);
+      scheduledRepoClosing.save(function(err,object,count){
+        if(err){
+          res.send(err);
+        } else {
+          console.log("successfully added a scheduled repo closing object to database with id " + object._id);
 
-      var string = "job-id:" + object._id;
-      // schedule to execute some code to close the repo
-      var job = schedule.scheduleJob(string, date, function(objectID){
-        console.log("CLOSE REPOS NOW!!!");
-        ScheduledRepoClosing.find({_id: objectID}).remove().exec();
+          var string = "job-id:" + object._id;
+          // schedule to execute some code to close the repo
+          var job = schedule.scheduleJob(string, date, function(objectID, action, orgName, repoName, apiKey){
+            console.log("CLOSE REPOS NOW!!!")
+            console.log("running repo closing script...");
 
-        console.log("repo closing schedule object for repo just closed removed from database");
-      }.bind(null, object._id));
+            closeRepositories(action, orgName, repoName, apiKey);
 
-      console.log('repos closing scheduled with unique job name ' + string);
+            ScheduledRepoClosing.find({_id: objectID}).remove().exec();
+            console.log("repo closing schedule object for repo just closed removed from database");
+          }.bind(null, object._id, 'close', organizationName, homeworkName, apiKey));
 
-      var obj = {'homeworkName': homeworkName, 'closingDate': dateTokenized[0], 'closingTime': dateTokenized[1]};
-      res.render('confirm',obj);
-    }
-  });
+          console.log('repos closing scheduled with unique job name ' + string);
+
+          var obj = {'homeworkName': homeworkName, 'closingDate': dateTokenized[0], 'closingTime': dateTokenized[1]};
+          res.render('confirm',obj);
+        }
+      });
+  } else {
+    // re-render with an error display
+    var obj = {'shouldDisplayError': true}
+    res.render('index', obj);
+  }
 });
 
 router.post('/confirm-update', function(req,res) {
@@ -73,6 +85,8 @@ router.post('/confirm-update', function(req,res) {
   var homeworkName = req.body.homeworkNameEdited;
   var closingDate = req.body.submissionDateEdited;
   var closingTime = req.body.submissionTimeEdited;
+
+  var apiKey = req.body.password;
 
   var date = new Date(closingDate + " " + closingTime);
   var localeDateString = date.toLocaleString();
@@ -88,19 +102,22 @@ router.post('/confirm-update', function(req,res) {
   ScheduledRepoClosing.findOneAndUpdate({'organization':organizationName, 'homeworkPrefix': homeworkName}, newData, function(err, doc){
     if (err) return res.sendStatus(err);
     console.log('successfully saved');
-    
+
     console.log(doc);
     var string = "job-id:" + doc._id;
     var job = schedule.scheduledJobs[string];
     if(job) {
       // cancel current job, re-schedule with new date
       job.cancel();
-      var newJob = schedule.scheduleJob(string, date, function(objectID){
+      var newJob = schedule.scheduleJob(string, date, function(objectID, action, orgName, repoName, apiKey){
         console.log("CLOSE REPOS NOW UPDATED!!!");
-        ScheduledRepoClosing.find({_id: objectID}).remove().exec();
+        console.log("running repo closing script...");
 
+        closeRepositories(action, orgName, repoName, apiKey);
+
+        ScheduledRepoClosing.find({_id: objectID}).remove().exec();
         console.log("repo closing schedule object for repo just closed removed from database");
-      }.bind(null, doc._id));
+      }.bind(null, doc._id, 'close', organizationName, homeworkName, apiKey));
 
       console.log('node-schedule job successfully rescheduled');
     } else {
@@ -135,7 +152,7 @@ router.get('/scheduled/view', function(req,res) {
 router.get('/scheduled/edit/:id', function(req,res) {
   var scheduledClosingID = req.params.id;
   console.log(scheduledClosingID);
-  var obj = {};
+  var obj = {'shouldDisplayError': false};
   var listOfSchedules = [];
   ScheduledRepoClosing.findOne({_id: scheduledClosingID}, function(err, scheduled, count) {
     console.log("found one scheduled object");

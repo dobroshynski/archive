@@ -211,8 +211,28 @@ hr {
   color: #117A65;
 }
 
+.wrapper-transparent-error-message {
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  border-radius: 2px;
+  padding: 1.4rem 0rem 1.6rem;
+  background: transparent;
+  color: #F5B7B1;
+  font-size: 1.8rem;
+  line-height: 2.4rem;
+  vertical-align: middle;
+}
+
 .wrapper-transparent {
-  overflow: scroll !important;
   position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -234,7 +254,6 @@ hr {
 }
 
 .wrapper {
-  overflow: scroll !important;
   position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
