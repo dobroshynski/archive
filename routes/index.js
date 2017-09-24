@@ -14,6 +14,8 @@ const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 const ScheduledRepoClosing = mongoose.model('ScheduledRepoClosing');
 
+const debug = true;
+
 function closeRepositories(action, orgName, repoName, apiToken) {
   var args = [action, orgName, repoName, apiToken];
   childProcess.fork(__dirname + '/../modify-repositories-script.js', args);
@@ -26,8 +28,6 @@ router.get('/', function(req, res, next) {
 
 router.post('/confirm', function(req,res) {
   // schedule a repo closing here
-  console.log(req.body);
-
   var organizationName = req.body.organizationName;
   var homeworkName = req.body.homeworkName;
   var closingDate = req.body.closingDate;
@@ -51,22 +51,21 @@ router.post('/confirm', function(req,res) {
         if(err){
           res.send(err);
         } else {
-          console.log("successfully added a scheduled repo closing object to database with id " + object._id);
-
+          if(debug) {
+            console.log("successfully added a scheduled repo closing object to database with id " + object._id);
+          }
           var string = "job-id:" + object._id;
           // schedule to execute some code to close the repo
           var job = schedule.scheduleJob(string, date, function(objectID, action, orgName, repoName, apiKey){
-            console.log("CLOSE REPOS NOW!!!")
             console.log("running repo closing script...");
 
             closeRepositories(action, orgName, repoName, apiKey);
-
             ScheduledRepoClosing.find({_id: objectID}).remove().exec();
-            console.log("repo closing schedule object for repo just closed removed from database");
           }.bind(null, object._id, 'close', organizationName, homeworkName, apiKey));
 
-          console.log('repos closing scheduled with unique job name ' + string);
-
+          if(debug) {
+            console.log('repos closing scheduled with unique job name ' + string);
+          }
           var obj = {'homeworkName': homeworkName, 'closingDate': dateTokenized[0], 'closingTime': dateTokenized[1]};
           res.render('confirm',obj);
         }
@@ -79,8 +78,7 @@ router.post('/confirm', function(req,res) {
 });
 
 router.post('/confirm-update', function(req,res) {
-  console.log(req.body);
-
+  // update the scheduled repo closing here
   var organizationName = req.body.organizationNameEdited;
   var homeworkName = req.body.homeworkNameEdited;
   var closingDate = req.body.submissionDateEdited;
@@ -97,26 +95,23 @@ router.post('/confirm-update', function(req,res) {
     homeworkPrefix: homeworkName,
     closeAt: date
   };
-  console.log(newData);
 
   ScheduledRepoClosing.findOneAndUpdate({'organization':organizationName, 'homeworkPrefix': homeworkName}, newData, function(err, doc){
     if (err) return res.sendStatus(err);
-    console.log('successfully saved');
-
-    console.log(doc);
+    if (debug) {
+      console.log('successfully saved');
+      console.log(doc);
+    }
     var string = "job-id:" + doc._id;
     var job = schedule.scheduledJobs[string];
     if(job) {
       // cancel current job, re-schedule with new date
       job.cancel();
       var newJob = schedule.scheduleJob(string, date, function(objectID, action, orgName, repoName, apiKey){
-        console.log("CLOSE REPOS NOW UPDATED!!!");
         console.log("running repo closing script...");
 
         closeRepositories(action, orgName, repoName, apiKey);
-
         ScheduledRepoClosing.find({_id: objectID}).remove().exec();
-        console.log("repo closing schedule object for repo just closed removed from database");
       }.bind(null, doc._id, 'close', organizationName, homeworkName, apiKey));
 
       console.log('node-schedule job successfully rescheduled');
@@ -127,7 +122,6 @@ router.post('/confirm-update', function(req,res) {
     var obj = {'homeworkName': homeworkName, 'closingDate': dateTokenized[0], 'closingTime': dateTokenized[1]};
     res.render('confirm-update',obj);
   });
-
 });
 
 router.get('/scheduled/view', function(req,res) {
@@ -135,7 +129,6 @@ router.get('/scheduled/view', function(req,res) {
   var listOfSchedules = [];
   ScheduledRepoClosing.find(function(err, schedules, count) {
     schedules.forEach(function(ele) {
-      console.log(ele);
       var singleObj = {'organizationName': ele.organization, 'homeworkName': ele.homeworkPrefix};
       var closingDate = ele.closeAt;
       var localeDateString = closingDate.toLocaleString();
@@ -151,12 +144,13 @@ router.get('/scheduled/view', function(req,res) {
 
 router.get('/scheduled/edit/:id', function(req,res) {
   var scheduledClosingID = req.params.id;
-  console.log(scheduledClosingID);
   var obj = {'shouldDisplayError': false};
   var listOfSchedules = [];
   ScheduledRepoClosing.findOne({_id: scheduledClosingID}, function(err, scheduled, count) {
-    console.log("found one scheduled object");
-    console.log(scheduled);
+    if (debug) {
+      console.log("found one scheduled object");
+      console.log(scheduled);
+    }
     obj['organizationName'] = scheduled.organization;
     obj['homeworkName'] = scheduled.homeworkPrefix;
     var date = scheduled.closeAt;
@@ -196,7 +190,6 @@ router.post('/confirm-delete', function(req,res) {
     } else {
       console.log("couldn't cancel scheduled job; job is " + job);
     }
-
     res.render('confirm-delete');
   } else {
     res.redirect('/scheduled/delete');
@@ -208,7 +201,6 @@ router.get('/scheduled/delete', function(req,res) {
   var listOfSchedules = [];
   ScheduledRepoClosing.find(function(err, schedules, count) {
     schedules.forEach(function(ele) {
-      console.log(ele);
       var summaryString = "[" + ele.organization + "] " + ele.homeworkPrefix;
       var singleObj = {'scheduleName': summaryString, 'scheduleID': ele._id};
 
@@ -224,7 +216,6 @@ router.get('/scheduled/edit', function(req,res) {
   var listOfSchedules = [];
   ScheduledRepoClosing.find(function(err, schedules, count) {
     schedules.forEach(function(ele) {
-      console.log(ele);
       var summaryString = "[" + ele.organization + "] " + ele.homeworkPrefix;
       var singleObj = {'scheduleName': summaryString, 'scheduleID': ele._id};
 
