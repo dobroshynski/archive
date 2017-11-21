@@ -1,6 +1,8 @@
 # fractals-java
 a tool for graphing and viewing different fractals
 
+[view]: /img/view.png "Graph Fractal View"
+
 - to plot a [Julia Set](https://en.wikipedia.org/wiki/Julia_set) with custom parameters a & b in format fc, c = a + bi, compile and run:
   - javac JuliaSet.java
   - java JuliaSet a b
