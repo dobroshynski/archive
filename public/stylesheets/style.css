@@ -48,7 +48,7 @@ button {
 body {
   font-family: "Roboto Light",sans-serif;
   background-image: -webkit-radial-gradient(0% 0%, circle, #45B39D, #0E6655 51%, #0B5345);
-  background-image: radial-gradient(circle at 0% 0%, #45B39D, #0E6655 51%, #0B5345);
+  background-image: radial-gradient(circle at 0% 0%, #404969, #404969 51%);
 }
 
 hr {
@@ -91,14 +91,14 @@ hr {
   margin: 0 auto;
   border: 2px solid;
   border-radius: 5px;
-  border-color: #F7F9F9;
+  border-color: #FF7F50;
   padding: 1.4rem 2rem 1.6rem;
-  background: #F7F9F9;
+  background: #FF7F50;
   font-family: "Roboto Light",sans-serif;
 }
 
 .white-button button {
-  color: #0B5345;
+  color: #E0FCFF;
   font-size: 1.5rem;
   line-height: 2.0rem;
   vertical-align: middle;
@@ -199,7 +199,8 @@ hr {
   margin: 0 auto;
   border-radius: 2px;
   padding: 1.4rem 2rem 1.6rem;
-  background: #F7F9F9;
+  background: #FF7F50;
+  color: #E0FCFF !important;
 }
 
 .submit-button button {
@@ -272,6 +273,7 @@ hr {
   border-radius: 2px;
   padding: 1.4rem 2rem 1.6rem;
   background: #F7F9F9;
+  background: #BDE4F4 !important;
 }
 
 .wrapper-scheduled-list {
@@ -301,7 +303,7 @@ hr {
   -webkit-box-flex: 1;
       -ms-flex-positive: 1;
           flex-grow: 1;
-  color: #1C2833;
+  color: #404969;
   font-size: 1.8rem;
   line-height: 2.4rem;
   vertical-align: middle;
@@ -363,6 +365,7 @@ hr {
   vertical-align: middle;
   -webkit-transition: color .25s;
   transition: color .25s;
+  background: #404969 !important;
 }
 
 .wrapper button:hover {
