@@ -97,6 +97,11 @@ hr {
   font-family: "Roboto Light",sans-serif;
 }
 
+.fa {
+  background: #404969;
+  color: #E0FCFF;
+}
+
 .white-button button {
   color: #E0FCFF;
   font-size: 1.5rem;
@@ -252,7 +257,7 @@ hr {
   border-radius: 2px;
   padding: 1.4rem 0rem 1.6rem;
   background: transparent;
-  color: #F7F9F9;
+  color: #E0FCFF;
   font-size: 1.8rem;
   line-height: 2.4rem;
   vertical-align: middle;
@@ -272,8 +277,11 @@ hr {
   margin: 0 auto;
   border-radius: 2px;
   padding: 1.4rem 2rem 1.6rem;
-  background: #F7F9F9;
-  background: #BDE4F4 !important;
+  background: #404969;
+  /* background: #BDE4F4 !important; */
+  border: 2px solid;
+  border-radius: 5px;
+  border-color: #FF7F50;
 }
 
 .wrapper-scheduled-list {
@@ -303,10 +311,15 @@ hr {
   -webkit-box-flex: 1;
       -ms-flex-positive: 1;
           flex-grow: 1;
-  color: #404969;
+  color: #E0FCFF;
   font-size: 1.8rem;
   line-height: 2.4rem;
   vertical-align: middle;
+}
+
+.wrapper input::placeholder {
+  color: #E0FCFF;
+  opacity: 0.25;
 }
 
 .title-action {
@@ -374,4 +387,5 @@ hr {
 
 .icon {
   cursor: pointer;
+  background-color: #FF7F50;
 }

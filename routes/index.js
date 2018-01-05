@@ -5,6 +5,10 @@ var childProcess = require('child_process');
 var fs = require('fs');
 var path = require('path');
 
+// authentication with passport
+var passport = require('passport-localapikey');
+
+
 var config = JSON.parse(fs.readFileSync(path.join(__dirname, '/../config.json')));
 
 require('../db');
