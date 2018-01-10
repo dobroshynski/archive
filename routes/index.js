@@ -10,7 +10,7 @@ var path = require('path');
 */
 router.get('/', function(req, res, next) {
   var obj = {'shouldDisplayError': false}
-  res.render('index', obj);
+  res.render('authenticate', obj);
 });
 
 module.exports = router;
