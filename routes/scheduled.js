@@ -17,7 +17,8 @@ const debug = true;
 /*
   view page listing all the scheduled closings of repositories
 */
-router.get('/scheduled/view', function(req,res) {
+router.get('/scheduled/view', authenticated, function(req,res) {
+  console.log(req.user);
   var obj = {};
   var listOfSchedules = [];
   ScheduledRepoClosing.find(function(err, schedules, count) {
@@ -39,7 +40,7 @@ router.get('/scheduled/view', function(req,res) {
   view page for edititng one particular scheduled closings of repository
   repo determined by the 'id'
 */
-router.get('/scheduled/edit/:id', function(req,res) {
+router.get('/scheduled/edit/:id', authenticated, function(req,res) {
   var scheduledClosingID = req.params.id;
   var obj = {'shouldDisplayError': false};
   var listOfSchedules = [];
@@ -76,7 +77,7 @@ router.get('/scheduled/edit/:id', function(req,res) {
 /*
   view a picker to select one repo closing schedule to delete
 */
-router.get('/scheduled/delete', function(req,res) {
+router.get('/scheduled/delete', authenticated, function(req,res) {
   var obj = {};
   var listOfSchedules = [];
   ScheduledRepoClosing.find(function(err, schedules, count) {
@@ -94,7 +95,7 @@ router.get('/scheduled/delete', function(req,res) {
 /*
   view a picker to select one repo closing schedule to edit
 */
-router.get('/scheduled/edit', function(req,res) {
+router.get('/scheduled/edit', authenticated, function(req,res) {
   var obj = {};
   var listOfSchedules = [];
   ScheduledRepoClosing.find(function(err, schedules, count) {
@@ -108,5 +109,14 @@ router.get('/scheduled/edit', function(req,res) {
     res.render('edit-scheduled', obj);
   });
 });
+
+/*
+  middleware helper function to ensure user is autheticated for any chosen particular route
+*/
+function authenticated(req, res, next) {
+  if (req.isAuthenticated()) { return next(); }
+  res.locals.message = "error";
+  res.redirect('/');
+}
 
 module.exports = router;

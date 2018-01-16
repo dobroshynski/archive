@@ -9,7 +9,7 @@
   <form method="POST" action="/confirm">
   <div class="container">
     <div class="top-buttons">
-      <a href="/">
+      <a href="/new">
       <div class="white-button spaced">
         <button type="button">Close Repos</button>
       </div>
@@ -42,13 +42,20 @@
     {{#each schedules as |singleSchedule|}}
     <div class="wrapper-scheduled-list">
       <div class="scheduled-summary stretched-wrapper">
-        <div class="info padded-double"> <i class="fa fa-github" aria-hidden="true"></i> <span class="view-scheduled"> {{singleSchedule.organizationName}} </span></div>
+        <div class="info padded-double"> <i class="fa fa-github fa-small" aria-hidden="true"></i> <span class="view-scheduled"> {{singleSchedule.organizationName}} </span></div>
         <hr>
-        <div class="info padded-double"> <i class="fa fa-folder" aria-hidden="true"></i> <span class="view-scheduled"> {{singleSchedule.homeworkName}} </span></div>
+        <div class="info padded-double"> <i class="fa fa-folder fa-small" aria-hidden="true"></i> <span class="view-scheduled"> {{singleSchedule.homeworkName}} </span></div>
         <hr>
-        <div class="info padded-double"> <i class="fa fa-clock-o" aria-hidden="true"></i> <span class="view-scheduled"> {{singleSchedule.closingDateTime}} </span></div>
+        <div class="info padded-double"> <i class="fa fa-clock-o fa-small" aria-hidden="true"></i> <span class="view-scheduled"> {{singleSchedule.closingDateTime}} </span></div>
       </div>
     </div>
+
+    <div class="edit-buttons-wrapper">
+      <div class="edit-buttons"></div>
+      <div class="edit-buttons-separator"></div>
+      <div class="edit-buttons"></div>
+    </div>
+
     <div class="separator"></div>
     {{/each}}
     <div class="separator"></div>

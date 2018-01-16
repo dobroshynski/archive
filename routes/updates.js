@@ -25,7 +25,7 @@ function closeRepositories(action, orgName, repoName, apiToken) {
 /*
   update a scheduled repo closing entry
 */
-router.post('/confirm-update', function(req,res) {
+router.post('/confirm-update', authenticated, function(req,res) {
   var organizationName = req.body.organizationNameEdited;
   var homeworkName = req.body.homeworkNameEdited;
   var closingDate = req.body.submissionDateEdited;
@@ -74,7 +74,7 @@ router.post('/confirm-update', function(req,res) {
 /*
   delete a specific scheduled repo closing and update
 */
-router.post('/confirm-delete', function(req,res) {
+router.post('/confirm-delete', authenticated, function(req,res) {
   var scheduledRepoClosingID = req.body.repoClosingScheduleIdentifier;
   if(scheduledRepoClosingID) {
     ScheduledRepoClosing.find({_id: scheduledRepoClosingID }).remove().exec();
@@ -93,5 +93,14 @@ router.post('/confirm-delete', function(req,res) {
     res.redirect('/scheduled/delete');
   }
 });
+
+/*
+  middleware helper function to ensure user is autheticated for any chosen particular route
+*/
+function authenticated(req, res, next) {
+  if (req.isAuthenticated()) { return next(); }
+  res.locals.message = "error";
+  res.redirect('/');
+}
 
 module.exports = router;

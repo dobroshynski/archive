@@ -25,7 +25,7 @@ function closeRepositories(action, orgName, repoName, apiToken) {
 /*
   create a new scheduled repo closing entry
 */
-router.post('/confirm', function(req,res) {
+router.post('/confirm', authenticated, function(req,res) {
   // schedule a repo closing here
   var organizationName = req.body.organizationName;
   var homeworkName = req.body.homeworkName;
@@ -75,5 +75,14 @@ router.post('/confirm', function(req,res) {
     res.render('index', obj);
   }
 });
+
+/*
+  middleware helper function to ensure user is autheticated for any chosen particular route
+*/
+function authenticated(req, res, next) {
+  if (req.isAuthenticated()) { return next(); }
+  res.locals.message = "error";
+  res.redirect('/');
+}
 
 module.exports = router;

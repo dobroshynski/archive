@@ -102,6 +102,15 @@ hr {
   color: #E0FCFF;
 }
 
+.fa-sign-out {
+  background: #FF7F50;
+}
+
+.fa-small {
+  background: #E0FCFF;
+  color: #404969;
+}
+
 .white-button button {
   color: #E0FCFF;
   font-size: 1.5rem;
@@ -284,6 +293,33 @@ hr {
   border-color: #FF7F50;
 }
 
+.edit-buttons-separator {
+  padding: 1.5rem;
+  display: inline-block !important;
+}
+
+.edit-buttons-wrapper {
+  display: inline;
+  text-align: center;
+}
+
+.edit-buttons {
+  width: 50%;
+  max-width: 100px;
+  text-align: left;
+  margin: 0 auto;
+  border-radius: 5px;
+  padding: 1.4rem 1.2rem 1.6rem;
+  background: #E0FCFF;
+  margin-top: 2%;
+
+  border: 2px solid;
+  border-radius: 5px;
+  border-color: #E0FCFF;
+
+  display: inline-block !important;
+}
+
 .wrapper-scheduled-list {
   /* position: relative;
   display: -webkit-box;
@@ -296,10 +332,20 @@ hr {
   width: 100%;
   max-width: 400px;
   margin: 0 auto;
-  border-radius: 2px;
-  padding: 1.4rem 2rem 1.6rem;
-  background: #F7F9F9;
-  margin-top: 3%;
+  border-radius: 5px;
+  padding: 1.4rem 1.2rem 1.6rem;
+  background: #E0FCFF;
+  margin-top: 2%;
+
+  border: 2px solid;
+  border-radius: 5px;
+  border-color: #E0FCFF;
+}
+
+.wrapper-scheduled-list hr {
+  border-color: #BDE4F4;
+  /* border:none; */
+  height: 1px;
 }
 
 .separator {
@@ -343,9 +389,10 @@ hr {
 }
 
 .view-scheduled {
-  color: #7F8C8D !important;
+  color: #404969 !important;
   font-size: 1.5rem !important;
   line-height: 2.4rem;
+  padding-left: 10px;
   vertical-align: middle;
   width: 325px;
 }
