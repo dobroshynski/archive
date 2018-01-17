@@ -78,11 +78,16 @@ passport.use(new LocalStrategy(
   }
 ));
 
+app.get('/unautheticated', function(req, res) {
+  req.session.unautheticated = true;
+  res.redirect('/');
+});
+
 /*
   autheticate with an API key and create a session
 */
 app.post('/authenticate',
-  passport.authenticate('localapikey', { failureRedirect: '/', failureFlash: false }),
+  passport.authenticate('localapikey', { failureRedirect: '/unautheticated', failureFlash: false }),
   function(req, res) {
      console.log(req.user);
      res.redirect('/new');
@@ -118,6 +123,10 @@ function authenticated(req, res, next) {
 */
 app.get('/', function(req, res, next) {
   var obj = {'shouldDisplayError': false}
+  if(req.session.unautheticated) {
+    obj['shouldDisplayError'] = true;
+    req.session.unautheticated = false;
+  }
   res.render('authenticate', obj);
 });
 

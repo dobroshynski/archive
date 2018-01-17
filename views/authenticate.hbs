@@ -12,7 +12,11 @@
       AIT Repo Closer
     </h1>
     <div class="top-spacer"></div>
-
+    {{#if shouldDisplayError}}
+    <div class="wrapper-transparent-error-message">
+      Error: Invalid Key
+    </div>
+    {{/if}}
     <div class="wrapper-transparent">
       Please enter your API token to authenticate:
     </div>
