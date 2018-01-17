@@ -5,6 +5,10 @@ html {
   font-size: 10px;
 }
 
+form {
+  display: inline;
+}
+
 *, *:before, *:after {
   box-sizing: inherit;
 }
@@ -102,6 +106,10 @@ hr {
   color: #E0FCFF;
 }
 
+.fa-navigation-button {
+  background: #FF7F50;
+}
+
 .fa-sign-out {
   background: #FF7F50;
 }
@@ -187,7 +195,7 @@ hr {
   margin: 0 auto;
   border-radius: 2px;
   padding: 1.4rem 2rem 1.6rem;
-  background: #F7F9F9;
+  background: #E0FCFF;
 }
 
 .back-button button {
