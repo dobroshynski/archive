@@ -10,49 +10,38 @@
   <form method="POST" action="/confirm-update">
   <div class="container">
     <div class="top-buttons">
-      <a href="/">
+      <a href="/new">
       <div class="white-button spaced">
-        <button type="button">Close Repos</button>
+        <button type="button">New</button>
       </div>
       </a>
       <span class="separator-button"></span>
       <a href="/scheduled/view">
       <div class="white-button spaced">
-        <button type="button">View Scheduled</button>
+        <button type="button">Scheduled</button>
       </div>
       </a>
       <span class="separator-button"></span>
-      <a href="/scheduled/edit">
+      <a href="/logout">
       <div class="white-button spaced">
-        <button type="button">Edit Scheduled</button>
-      </div>
-      </a>
-      <span class="separator-button"></span>
-      <a href="/scheduled/delete">
-      <div class="white-button spaced">
-        <button type="button">Delete</button>
+        <button type="button">Logout <i class="fa fa-sign-out" aria-hidden="true"></i> </button>
       </div>
       </a>
     </div>
-    <div class="spacer"></div>
+    <div class="top-spacer"></div>
     <div class="wrapper-transparent">
       Edit the scheduled repo closing
     </div>
-    <div class="wrapper">
-      <div class="scheduled-summary">
-        <div class="info"> <i class="fa fa-github" aria-hidden="true"></i> <input class="edit-scheduled padded" type="text" name="organizationNameEdited" value="{{organizationName}}" readonly></input></div>
+    <div class="wrapper-scheduled-list">
+      <div class="scheduled-summary stretched-wrapper">
+        <div class="info"> <i class="fa fa-github fa-small" aria-hidden="true"></i> <input class="view-scheduled padded" type="text" name="organizationNameEdited" value="{{organizationName}}" readonly></input></div>
         <hr>
-        <div class="info"> <i class="fa fa-folder" aria-hidden="true"></i> <input class="edit-scheduled padded" type="text" name="homeworkNameEdited" value="{{homeworkName}}" readonly></input></div>
+        <div class="info"> <i class="fa fa-folder fa-small" aria-hidden="true"></i> <input class="view-scheduled padded" type="text" name="homeworkNameEdited" value="{{homeworkName}}" readonly></input></div>
         <hr>
-        <div class="info"> <i class="fa fa-calendar-o" aria-hidden="true"></i> <input class="edit-scheduled" type="date" name="submissionDateEdited" value="{{dateToClose}}" required></input><i class="fa fa-pencil" aria-hidden="true"></i></div>
+        <div class="info"> <i class="fa fa-calendar-o fa-small" aria-hidden="true"></i> <input class="view-scheduled" type="date" name="submissionDateEdited" value="{{dateToClose}}" required></input><i class="fa fa-pencil fa-small" aria-hidden="true"></i></div>
         <hr>
-        <div class="info"> <i class="fa fa-clock-o" aria-hidden="true"></i> <input class="edit-scheduled" type="time" name="submissionTimeEdited" value="{{timeToClose}}" required></input><i class="fa fa-pencil" aria-hidden="true"></i></div>
+        <div class="info"> <i class="fa fa-clock-o fa-small" aria-hidden="true"></i> <input class="view-scheduled" type="time" name="submissionTimeEdited" value="{{timeToClose}}" required></input><i class="fa fa-pencil fa-small" aria-hidden="true"></i></div>
       </div>
-    </div>
-    <div class="separator"></div>
-    <div class="wrapper">
-      <input class="" type="password" name="password" placeholder="Key" required></input>
-      <button type="button"><i class="fa fa-lock" aria-hidden="true"></i></button>
     </div>
     <div class="separator"></div>
     <div class="white-button spaced">

@@ -23,7 +23,7 @@ router.get('/scheduled/view', authenticated, function(req,res) {
   var listOfSchedules = [];
   ScheduledRepoClosing.find(function(err, schedules, count) {
     schedules.forEach(function(ele) {
-      var singleObj = {'organizationName': ele.organization, 'homeworkName': ele.homeworkPrefix};
+      var singleObj = {'id': ele._id, 'organizationName': ele.organization, 'homeworkName': ele.homeworkPrefix};
       var closingDate = ele.closeAt;
       var localeDateString = closingDate.toLocaleString();
       singleObj['closingDateTime'] = localeDateString;

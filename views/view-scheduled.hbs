@@ -11,25 +11,19 @@
     <div class="top-buttons">
       <a href="/new">
       <div class="white-button spaced">
-        <button type="button">Close Repos</button>
+        <button type="button">New</button>
       </div>
       </a>
       <span class="separator-button"></span>
       <a href="/scheduled/view">
       <div class="white-button spaced">
-        <button type="button">View Scheduled</button>
+        <button type="button">Scheduled</button>
       </div>
       </a>
       <span class="separator-button"></span>
-      <a href="/scheduled/edit">
+      <a href="/logout">
       <div class="white-button spaced">
-        <button type="button">Edit Scheduled</button>
-      </div>
-      </a>
-      <span class="separator-button"></span>
-      <a href="/scheduled/delete">
-      <div class="white-button spaced">
-        <button type="button">Delete</button>
+        <button type="button">Logout <i class="fa fa-sign-out" aria-hidden="true"></i> </button>
       </div>
       </a>
     </div>
@@ -51,9 +45,12 @@
     </div>
 
     <div class="edit-buttons-wrapper">
-      <div class="edit-buttons"></div>
+      <a href="/scheduled/edit/{{singleSchedule.id}}"><div class="edit-buttons">Edit</div></a>
       <div class="edit-buttons-separator"></div>
-      <div class="edit-buttons"></div>
+      <form method="POST" action="/confirm-delete">
+          <input id="repoClosingScheduleIdentifier" type="hidden" name="repoClosingScheduleIdentifier" value="{{singleSchedule.id}}">
+          <button class="edit-buttons delete-post" type="submit">Delete</button>
+      </form>
     </div>
 
     <div class="separator"></div>

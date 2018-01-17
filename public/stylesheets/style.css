@@ -56,7 +56,7 @@ hr {
 }
 
 .heading {
-  font-size: 5em;
+  font-size: 3em;
   text-align: center;
   margin-top: 3%;
   color: #F7F9F9;
@@ -309,7 +309,7 @@ hr {
   text-align: left;
   margin: 0 auto;
   border-radius: 5px;
-  padding: 1.4rem 1.2rem 1.6rem;
+  padding: 1.2rem 1.2rem 1.2rem;
   background: #E0FCFF;
   margin-top: 2%;
 
@@ -317,7 +317,23 @@ hr {
   border-radius: 5px;
   border-color: #E0FCFF;
 
+  text-align: center;
+  font-family: "Roboto Light",sans-serif;
+  font-size: 1.3em;
+
+  color: #404969;
+
   display: inline-block !important;
+}
+
+.edit-buttons:hover {
+  cursor: pointer;
+}
+
+.delete-post {
+  background-color: #FF7F50;
+  color: #E0FCFF;
+  border-color: #FF7F50;
 }
 
 .wrapper-scheduled-list {
