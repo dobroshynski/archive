@@ -40,6 +40,8 @@ input {
   border-style: none;
   background: transparent;
   outline: none;
+  font-family: "Roboto Light",sans-serif;
+  letter-spacing: 1.25px;
 }
 
 button {
@@ -51,6 +53,7 @@ button {
 
 body {
   font-family: "Roboto Light",sans-serif;
+  letter-spacing: 1.25px;
   background-image: -webkit-radial-gradient(0% 0%, circle, #45B39D, #0E6655 51%, #0B5345);
   background-image: radial-gradient(circle at 0% 0%, #404969, #404969 51%);
 }
@@ -59,10 +62,15 @@ hr {
   border-color: #117A65;
 }
 
+hr.hr-separator {
+  width: 400px;
+  border-color: #E0FCFF;
+}
+
 .heading {
-  font-size: 3em;
+  font-size: 2em;
   text-align: center;
-  margin-top: 3%;
+  margin-top: 1.5%;
   color: #F7F9F9;
 }
 
@@ -141,14 +149,16 @@ hr {
 }
 
 .checkmark {
-  padding-top: 20px;
+  padding-top: 10px;
+  background-color: inherit;
 }
 
 .sub-heading {
-  font-size: 3em;
+  font-size: 1.5em;
   text-align: center;
   font-family: "Roboto Light",sans-serif;
   color: #F7F9F9;
+  margin-top: -0.5%;
 }
 
 .schedules-list-picker {
@@ -459,4 +469,10 @@ hr {
 .icon {
   cursor: pointer;
   background-color: #FF7F50;
+}
+
+.message {
+  background-color: #35B0AB;
+  height: 120px;
+  margin-top: 2%;
 }

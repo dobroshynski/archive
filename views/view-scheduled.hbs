@@ -27,11 +27,24 @@
       </div>
       </a>
     </div>
+    {{#if shouldDisplayMessage}}
+    <div class="message">
+      <h1 class="heading">
+        {{message.title}}
+        <br/><i class="checkmark fa fa-check-circle-o" aria-hidden="true"></i>
+      </h1>
+      <h2 class="sub-heading">
+        {{message.body}}
+      </h2>
+    </div>
+    {{/if}}
     <div class="top-spacer"></div>
     {{#if isNotEmpty}}
     <div class="wrapper-transparent">
       Scheduled repo closings
     </div>
+    <div class="separator"></div>
+    <hr class="hr-separator"/>
     {{/if}}
     {{#each schedules as |singleSchedule|}}
     <div class="wrapper-scheduled-list">
@@ -47,15 +60,14 @@
     <div class="edit-buttons-wrapper">
       <a href="/scheduled/edit/{{singleSchedule.id}}"><div class="edit-buttons">Edit</div></a>
       <div class="edit-buttons-separator"></div>
-      <form method="POST" action="/confirm-delete">
+      <form method="POST" action="/confirm-delete" onsubmit="return confirm('Delete this scheduled repo closing?');">
           <input id="repoClosingScheduleIdentifier" type="hidden" name="repoClosingScheduleIdentifier" value="{{singleSchedule.id}}">
           <button class="edit-buttons delete-post" type="submit">Delete</button>
       </form>
     </div>
     <div class="separator"></div>
-    <div class="separator"></div>
+    <hr class="hr-separator"/>
     {{/each}}
-    
     <div class="separator"></div>
     <div class="spacer"></div>
   </div>

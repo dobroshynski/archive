@@ -65,9 +65,13 @@ router.post('/confirm-update', authenticated, function(req,res) {
     } else {
       console.log("couldn't reschedule job; job is " + job);
     }
-
-    var obj = {'homeworkName': homeworkName, 'closingDate': dateTokenized[0], 'closingTime': dateTokenized[1]};
-    res.render('confirm-update',obj);
+    var message = {};
+    message["title"] = "Update Complete.";
+    var messageBody = "The repositories for " + homeworkName + " are now set to close on " + dateTokenized[0] + " at " + dateTokenized[1] + ".";
+    message["body"] = messageBody;
+    
+    req.session.message = message;
+    res.redirect('/scheduled/view');
   });
 });
 
@@ -88,7 +92,14 @@ router.post('/confirm-delete', authenticated, function(req,res) {
     } else {
       console.log("couldn't cancel scheduled job; job is " + job);
     }
-    res.render('confirm-delete');
+
+    var message = {};
+    message["title"] = "Delete Complete";
+    var messageBody = "The scheduled job to close the repository has been removed.";
+    message["body"] = messageBody;
+
+    req.session.message = message;
+    res.redirect('/scheduled/view');
   } else {
     res.redirect('/scheduled/delete');
   }

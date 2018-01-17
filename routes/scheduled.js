@@ -19,6 +19,7 @@ const debug = true;
 */
 router.get('/scheduled/view', authenticated, function(req,res) {
   console.log(req.user);
+  console.log(req.session.message);
   var obj = {};
   var listOfSchedules = [];
   ScheduledRepoClosing.find(function(err, schedules, count) {
@@ -32,6 +33,14 @@ router.get('/scheduled/view', authenticated, function(req,res) {
     });
     obj['schedules'] = listOfSchedules;
     listOfSchedules.length == 0 ? obj['isNotEmpty'] = false : obj['isNotEmpty'] = true;
+
+    // message if updated anything
+    if(req.session.message) {
+      var message = req.session.message;
+      req.session.message = undefined;
+      obj['shouldDisplayMessage'] = true;
+      obj['message'] = message;
+    }
     res.render('view-scheduled', obj);
   });
 });

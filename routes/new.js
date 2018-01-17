@@ -65,8 +65,14 @@ router.post('/confirm', authenticated, function(req,res) {
           if(debug) {
             console.log('repos closing scheduled with unique job name ' + string);
           }
-          var obj = {'homeworkName': homeworkName, 'closingDate': dateTokenized[0], 'closingTime': dateTokenized[1]};
-          res.render('confirm',obj);
+
+          var message = {};
+          message["title"] = "All Set.";
+          var messageBody = "The repositories for " + homeworkName + " are set to close on " + dateTokenized[0] + " at " + dateTokenized[1] + ".";
+          message["body"] = messageBody;
+
+          req.session.message = message;
+          res.redirect('/scheduled/view');
         }
       });
   } else {
