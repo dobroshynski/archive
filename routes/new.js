@@ -33,9 +33,9 @@ router.post('/confirm', authenticated, function(req,res) {
   var closingTime = req.body.closingTime;
 
   var apiKey = req.body.password;
-  var storedToken = config.token;
+  // var storedToken = config.token;
 
-  if(storedToken === apiKey) {
+  // if(storedToken === apiKey) {
       var date = new Date(closingDate + " " + closingTime);
       var localeDateString = date.toLocaleString();
       var dateTokenized = localeDateString.split(',');
@@ -75,11 +75,11 @@ router.post('/confirm', authenticated, function(req,res) {
           res.redirect('/scheduled/view');
         }
       });
-  } else {
-    // re-render with an error display
-    var obj = {'shouldDisplayError': true}
-    res.render('index', obj);
-  }
+  // } else {
+  //   // re-render with an error display
+  //   var obj = {'shouldDisplayError': true}
+  //   res.render('index', obj);
+  // }
 });
 
 /*

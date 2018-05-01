@@ -104,7 +104,7 @@ hr.hr-separator {
   border: 2px solid;
   border-radius: 5px;
   border-color: #FF7F50;
-  padding: 1.4rem 2rem 1.6rem;
+  padding: 1.2rem 2rem 1.4rem;
   background: #FF7F50;
   font-family: "Roboto Light",sans-serif;
 }
@@ -230,7 +230,7 @@ hr.hr-separator {
   max-width: 58px;
   margin: 0 auto;
   border-radius: 2px;
-  padding: 1.4rem 2rem 1.6rem;
+  padding: 1.2rem 2rem 1.4rem;
   background: #FF7F50;
   color: #E0FCFF !important;
 }
