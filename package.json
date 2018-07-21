@@ -11,11 +11,12 @@
     "cookie-parser": "~1.4.3",
     "debug": "^2.6.9",
     "dotenv": "^4.0.0",
-    "express": "^4.15.5",
+    "express": "^4.16.3",
     "hbs": "~4.0.1",
     "morgan": "~1.8.1",
     "ngrok": "^2.3.0",
-    "request": "^2.85.0",
-    "serve-favicon": "^2.4.5"
+    "npm": "^6.2.0",
+    "request": "^2.87.0",
+    "serve-favicon": "^2.5.0"
   }
 }
