@@ -55,23 +55,23 @@ body {
   font-family: "Roboto Light",sans-serif;
   letter-spacing: 1.25px;
   background-image: -webkit-radial-gradient(0% 0%, circle, #45B39D, #0E6655 51%, #0B5345);
-  background-image: radial-gradient(circle at 0% 0%, #404969, #404969 51%);
+  background-image: radial-gradient(circle at 0% 0%, #eeeeee, #eeeeee 51%);
 }
 
 hr {
-  border-color: #117A65;
+  border-color: #393e46;
 }
 
 hr.hr-separator {
   width: 400px;
-  border-color: #E0FCFF;
+  border-color: #393e46;
 }
 
 .heading {
   font-size: 2em;
   text-align: center;
   margin-top: 1.5%;
-  color: #F7F9F9;
+  color: #222831;
 }
 
 .spaced {
@@ -103,15 +103,15 @@ hr.hr-separator {
   margin: 0 auto;
   border: 2px solid;
   border-radius: 5px;
-  border-color: #FF7F50;
+  border-color: #393e46;
   padding: 1.2rem 2rem 1.4rem;
-  background: #FF7F50;
+  background: #393e46;
   font-family: "Roboto Light",sans-serif;
 }
 
 .fa {
-  background: #404969;
-  color: #E0FCFF;
+  background: #393e46;
+  color: #eeeeee;
 }
 
 .fa-navigation-button {
@@ -119,16 +119,17 @@ hr.hr-separator {
 }
 
 .fa-sign-out {
-  background: #FF7F50;
+  background: #393e46;
 }
 
 .fa-small {
-  background: #E0FCFF;
-  color: #404969;
+  background: #393e46;
+  color: #eeeeee;
 }
 
+/* big navigation buttons */
 .white-button button {
-  color: #E0FCFF;
+  color: #eeeeee;
   font-size: 1.5rem;
   line-height: 2.0rem;
   vertical-align: middle;
@@ -157,7 +158,7 @@ hr.hr-separator {
   font-size: 1.5em;
   text-align: center;
   font-family: "Roboto Light",sans-serif;
-  color: #F7F9F9;
+  color: #393e46;
   margin-top: -0.5%;
 }
 
@@ -231,7 +232,7 @@ hr.hr-separator {
   margin: 0 auto;
   border-radius: 2px;
   padding: 1.2rem 2rem 1.4rem;
-  background: #FF7F50;
+  background: #393e46;
   color: #E0FCFF !important;
 }
 
@@ -284,7 +285,7 @@ hr.hr-separator {
   border-radius: 2px;
   padding: 1.4rem 0rem 1.6rem;
   background: transparent;
-  color: #E0FCFF;
+  color: #393e46;
   font-size: 1.8rem;
   line-height: 2.4rem;
   vertical-align: middle;
@@ -304,11 +305,12 @@ hr.hr-separator {
   margin: 0 auto;
   border-radius: 2px;
   padding: 1.4rem 2rem 1.6rem;
-  background: #404969;
+  background: #393e46;
   /* background: #BDE4F4 !important; */
   border: 2px solid;
   border-radius: 5px;
-  border-color: #FF7F50;
+  border-color: #222831;
+
 }
 
 .edit-buttons-separator {
@@ -328,18 +330,18 @@ hr.hr-separator {
   margin: 0 auto;
   border-radius: 5px;
   padding: 1.2rem 1.2rem 1.2rem;
-  background: #E0FCFF;
+  background: #393e46;
   margin-top: 2%;
 
   border: 2px solid;
   border-radius: 5px;
-  border-color: #E0FCFF;
+  border-color: #393e46;
 
   text-align: center;
   font-family: "Roboto Light",sans-serif;
   font-size: 1.3em;
 
-  color: #404969;
+  color: #eeeeee;
 
   display: inline-block !important;
 }
@@ -349,9 +351,12 @@ hr.hr-separator {
 }
 
 .delete-post {
-  background-color: #FF7F50;
-  color: #E0FCFF;
-  border-color: #FF7F50;
+  background-color: #cd5555;
+  color: #eeeeee;
+  border-color: #cd5555;
+  text-align: center;
+  font-family: "Roboto Light",sans-serif;
+  font-size: 1.3em;
 }
 
 .wrapper-scheduled-list {
@@ -368,16 +373,22 @@ hr.hr-separator {
   margin: 0 auto;
   border-radius: 5px;
   padding: 1.4rem 1.2rem 1.6rem;
-  background: #E0FCFF;
+  background: #393e46;
   margin-top: 2%;
 
   border: 2px solid;
   border-radius: 5px;
-  border-color: #E0FCFF;
+  border-color: #393e46;
+}
+
+.physical-button {
+  -webkit-box-shadow: 10px 14px 46px -4px rgba(0,0,0,0.39);
+  -moz-box-shadow: 10px 14px 46px -4px rgba(0,0,0,0.39);
+  box-shadow: 10px 14px 46px -4px rgba(0,0,0,0.39);
 }
 
 .wrapper-scheduled-list hr {
-  border-color: #BDE4F4;
+  border-color: #eeeeee;
   /* border:none; */
   height: 1px;
 }
@@ -391,7 +402,7 @@ hr.hr-separator {
   -webkit-box-flex: 1;
       -ms-flex-positive: 1;
           flex-grow: 1;
-  color: #E0FCFF;
+  color: #eeeeee;
   font-size: 1.8rem;
   line-height: 2.4rem;
   vertical-align: middle;
@@ -423,7 +434,7 @@ hr.hr-separator {
 }
 
 .view-scheduled {
-  color: #404969 !important;
+  color: #eeeeee !important;
   font-size: 1.5rem !important;
   line-height: 2.4rem;
   padding-left: 10px;
@@ -468,7 +479,7 @@ hr.hr-separator {
 
 .icon {
   cursor: pointer;
-  background-color: #FF7F50;
+  background-color: #393e46;
 }
 
 .message {
