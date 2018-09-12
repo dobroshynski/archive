@@ -22,7 +22,7 @@ router.get('/scheduled/view', authenticated, function(req,res) {
   console.log(req.session.message);
   var obj = {};
   var listOfSchedules = [];
-  ScheduledRepoClosing.find(function(err, schedules, count) {
+  ScheduledRepoClosing.find({ "createdBy": req.user._id }, function(err, schedules, count) {
     schedules.forEach(function(ele) {
       var singleObj = {'id': ele._id, 'organizationName': ele.organization, 'homeworkName': ele.homeworkPrefix};
       var closingDate = ele.closeAt;

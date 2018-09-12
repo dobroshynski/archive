@@ -4,6 +4,7 @@ const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const request = require('request');
 
 const newSchedule = require('./routes/new');
 const scheduled = require('./routes/scheduled');
@@ -119,15 +120,43 @@ function authenticated(req, res, next) {
 }
 
 /*
-  root page, autheticate here
+  root page
 */
 app.get('/', function(req, res, next) {
+  res.render('main');
+});
+
+/*
+   autheticate here
+*/
+app.get('/authenticate', function(req, res, next) {
   var obj = {'shouldDisplayError': false}
   if(req.session.unautheticated) {
     obj['shouldDisplayError'] = true;
     req.session.unautheticated = false;
   }
   res.render('authenticate', obj);
+});
+
+/*
+  create a new account by supplying organization name and api key
+*/
+app.get('/create-account', function(req, res, next) {
+  res.render('create-account');
+});
+
+app.post('/create-account', function(req, res, next) {
+  const account = new APIKey({
+    key: req.body.apikey
+  });
+
+  account.save(function(err,object,count){
+    if(err) {
+      res.redirect('/create-account');
+    } else {
+      res.redirect(307, '/authenticate');
+    }
+  });
 });
 
 /*

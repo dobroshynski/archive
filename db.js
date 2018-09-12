@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 
 const ScheduledRepoClosing = new mongoose.Schema({
+  createdBy: String, // id of autheticated user (by API key) that added this scheduled repo closing
   organization: String,
   homeworkPrefix: String,
   closeAt: Date

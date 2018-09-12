@@ -39,8 +39,9 @@ router.post('/confirm', authenticated, function(req,res) {
       var date = new Date(closingDate + " " + closingTime);
       var localeDateString = date.toLocaleString();
       var dateTokenized = localeDateString.split(',');
-
+      
       const scheduledRepoClosing = new ScheduledRepoClosing({
+        createdBy: req.user._id,
         organization: organizationName,
         homeworkPrefix: homeworkName,
         closeAt: date

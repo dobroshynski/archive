@@ -233,12 +233,12 @@ hr.hr-separator {
   border-radius: 2px;
   padding: 1.2rem 2rem 1.4rem;
   background: #393e46;
-  color: #E0FCFF !important;
+  color: #eeeeee !important;
 }
 
 .submit-button button {
-  color: #1C2833;
-  font-size: 2.4rem;
+  color: #eeeeee;
+  font-size: 2.0rem;
   line-height: 2.4rem;
   vertical-align: middle;
   -webkit-transition: color .25s;
@@ -247,6 +247,40 @@ hr.hr-separator {
 
 .submit-button button:hover {
   color: #117A65;
+}
+
+
+/* button to create new account */
+
+.create-account-button {
+  /* position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row; */
+          flex-direction: row;
+  margin: 0 auto;
+  border-radius: 5px;
+  padding: 1.2rem 2rem 1.4rem;
+  background: #393e46;
+  color: #eeeeee !important;
+  text-align: center;
+}
+
+.create-account-button button {
+  color: #eeeeee;
+  font-size: 1.5rem;
+  line-height: 2.4rem;
+}
+
+.create-account-button:hover {
+  cursor: pointer;
+}
+
+.create-account-button button:hover {
+  cursor: pointer;
 }
 
 .wrapper-transparent-error-message {
@@ -281,6 +315,26 @@ hr.hr-separator {
           flex-direction: row;
   width: 100%;
   max-width: 400px;
+  margin: 0 auto;
+  border-radius: 2px;
+  padding: 1.4rem 0rem 1.6rem;
+  background: transparent;
+  color: #393e46;
+  font-size: 1.8rem;
+  line-height: 2.4rem;
+  vertical-align: middle;
+}
+
+.wrapper-main-page {
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  text-align: center;
   margin: 0 auto;
   border-radius: 2px;
   padding: 1.4rem 0rem 1.6rem;
