@@ -8,7 +8,8 @@ const ScheduledRepoClosing = new mongoose.Schema({
 });
 
 const APIKey = new mongoose.Schema({
-  key: String
+  key: String,
+  displayName: String
 });
 
 var fs = require('fs');

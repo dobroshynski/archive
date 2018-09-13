@@ -304,6 +304,10 @@ hr.hr-separator {
   vertical-align: middle;
 }
 
+.centered-wrapper {
+  text-align: center !important;
+}
+
 .wrapper-transparent {
   position: relative;
   display: -webkit-box;

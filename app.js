@@ -81,7 +81,7 @@ passport.use(new LocalStrategy(
 
 app.get('/unautheticated', function(req, res) {
   req.session.unautheticated = true;
-  res.redirect('/');
+  res.redirect('/authenticate');
 });
 
 /*
@@ -147,17 +147,23 @@ app.get('/create-account', function(req, res, next) {
 
 app.post('/create-account', function(req, res, next) {
   const apikey = req.body.apikey;
+  const displayName = req.body.displayName;
   const account = new APIKey({
-    key: apikey
+    key: apikey,
+    displayName: displayName
   });
-
+  // try to find an APIKey and prevent a duplicate, otherwise crate a new
   APIKey.find({ key: apikey }, function(err, keys, count) {
-    if(count != 0) {
+    const keysFound = keys.length;
+    if(keysFound != 0) {
+      console.log("!= 0");
+      console.log(keysFound);
       res.redirect('/create-account');
     } else {
       // create new account
       account.save(function(err,object,count){
         if(err) {
+          console.log(err);
           res.redirect('/create-account');
         } else {
           res.redirect(307, '/authenticate');
