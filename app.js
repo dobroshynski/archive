@@ -146,15 +146,23 @@ app.get('/create-account', function(req, res, next) {
 });
 
 app.post('/create-account', function(req, res, next) {
+  const apikey = req.body.apikey;
   const account = new APIKey({
-    key: req.body.apikey
+    key: apikey
   });
 
-  account.save(function(err,object,count){
-    if(err) {
+  APIKey.find({ key: apikey }, function(err, keys, count) {
+    if(count != 0) {
       res.redirect('/create-account');
     } else {
-      res.redirect(307, '/authenticate');
+      // create new account
+      account.save(function(err,object,count){
+        if(err) {
+          res.redirect('/create-account');
+        } else {
+          res.redirect(307, '/authenticate');
+        }
+      });
     }
   });
 });
