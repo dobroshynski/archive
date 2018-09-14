@@ -9,6 +9,7 @@ const request = require('request');
 const newSchedule = require('./routes/new');
 const scheduled = require('./routes/scheduled');
 const updates = require('./routes/updates');
+const settings = require('./routes/settings');
 
 const session = require('express-session');
 
@@ -43,6 +44,7 @@ app.use(passport.session());
 app.use('/', newSchedule);
 app.use('/', scheduled);
 app.use('/', updates);
+app.use('/', settings);
 
 /*
   AUTHENTICATION
