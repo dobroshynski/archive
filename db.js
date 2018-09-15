@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 const ScheduledRepoClosing = new mongoose.Schema({
-  createdBy: String, // id of autheticated user (by API key) that added this scheduled repo closing
+  ownerId: String, // id of autheticated user (by API key) that added this scheduled repo closing
   organization: String,
   homeworkPrefix: String,
   closeAt: Date
@@ -9,6 +9,18 @@ const ScheduledRepoClosing = new mongoose.Schema({
 
 const APIKey = new mongoose.Schema({
   key: String,
+  displayName: String
+});
+
+const GithubOrganization = new mongoose.Schema({
+  ownerId: String,
+  name: String,
+  displayName: String
+});
+
+const StudentList = new mongoose.Schema({
+  ownerId: String,
+  students: [String],
   displayName: String
 });
 
