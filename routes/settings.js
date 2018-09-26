@@ -1,10 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var schedule = require('node-schedule');
-var childProcess = require('child_process');
-var fs = require('fs');
-var path = require('path');
-var config = JSON.parse(fs.readFileSync(path.join(__dirname, '/../config.json')));
+const express = require('express');
+const router = express.Router();
+const schedule = require('node-schedule');
+const childProcess = require('child_process');
 
 require('../db');
 
@@ -12,6 +9,7 @@ require('../db');
 const mongoose = require('mongoose');
 const ScheduledRepoClosing = mongoose.model('ScheduledRepoClosing');
 
+//mdebug flag
 const debug = true;
 
 /*
