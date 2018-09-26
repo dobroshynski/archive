@@ -18,10 +18,9 @@ const debug = true;
   view page listing all the scheduled closings of repositories
 */
 router.get('/scheduled/view', authenticated, function(req,res) {
-  console.log(req.user);
-  console.log(req.session.message);
   var obj = {};
   var listOfSchedules = [];
+
   ScheduledRepoClosing.find({ "ownerId": req.user._id }, function(err, schedules, count) {
     schedules.forEach(function(ele) {
       var singleObj = {'id': ele._id, 'organizationName': ele.organization, 'homeworkName': ele.homeworkPrefix};
@@ -31,6 +30,7 @@ router.get('/scheduled/view', authenticated, function(req,res) {
 
       listOfSchedules.push(singleObj);
     });
+
     obj['schedules'] = listOfSchedules;
     listOfSchedules.length == 0 ? obj['isNotEmpty'] = false : obj['isNotEmpty'] = true;
 
@@ -53,6 +53,7 @@ router.get('/scheduled/edit/:id', authenticated, function(req,res) {
   var scheduledClosingID = req.params.id;
   var obj = {'shouldDisplayError': false};
   var listOfSchedules = [];
+
   ScheduledRepoClosing.findOne({_id: scheduledClosingID}, function(err, scheduled, count) {
     if (debug) {
       console.log("found one scheduled object");
@@ -60,17 +61,18 @@ router.get('/scheduled/edit/:id', authenticated, function(req,res) {
     }
     obj['organizationName'] = scheduled.organization;
     obj['homeworkName'] = scheduled.homeworkPrefix;
-    var date = scheduled.closeAt;
 
+    var date = scheduled.closeAt;
     var month = date.getMonth() + 1;
     var monthString = "";
+
     if(month <= 9) {
       monthString = "0" + month;
     } else {
       monthString = "" + month;
     }
-    var dateString = date.getFullYear() + "-" + monthString + "-" + date.getDate(); // YYYY-MM-DD
 
+    var dateString = date.getFullYear() + "-" + monthString + "-" + date.getDate(); // YYYY-MM-DD
     var hoursString = date.getHours() <= 9 ? "0" + date.getHours() : date.getHours();
     var minutesString = date.getMinutes() <= 9 ? "0" + date.getMinutes() : date.getMinutes();
 
@@ -80,42 +82,6 @@ router.get('/scheduled/edit/:id', authenticated, function(req,res) {
     obj['timeToClose'] = timeString;
 
     res.render('edit-scheduled-single', obj);
-  });
-});
-
-/*
-  view a picker to select one repo closing schedule to delete
-*/
-router.get('/scheduled/delete', authenticated, function(req,res) {
-  var obj = {};
-  var listOfSchedules = [];
-  ScheduledRepoClosing.find(function(err, schedules, count) {
-    schedules.forEach(function(ele) {
-      var summaryString = "[" + ele.organization + "] " + ele.homeworkPrefix;
-      var singleObj = {'scheduleName': summaryString, 'scheduleID': ele._id};
-
-      listOfSchedules.push(singleObj);
-    });
-    obj['schedules'] = listOfSchedules;
-    res.render('delete-scheduled', obj);
-  });
-});
-
-/*
-  view a picker to select one repo closing schedule to edit
-*/
-router.get('/scheduled/edit', authenticated, function(req,res) {
-  var obj = {};
-  var listOfSchedules = [];
-  ScheduledRepoClosing.find(function(err, schedules, count) {
-    schedules.forEach(function(ele) {
-      var summaryString = "[" + ele.organization + "] " + ele.homeworkPrefix;
-      var singleObj = {'scheduleName': summaryString, 'scheduleID': ele._id};
-
-      listOfSchedules.push(singleObj);
-    });
-    obj['schedules'] = listOfSchedules;
-    res.render('edit-scheduled', obj);
   });
 });
 

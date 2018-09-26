@@ -31,7 +31,7 @@ router.post('/confirm-update', authenticated, function(req,res) {
   var closingDate = req.body.submissionDateEdited;
   var closingTime = req.body.submissionTimeEdited;
 
-  var apiKey = req.body.password;
+  var apiKey = req.user.key; // api key to use to close the repositories
 
   var date = new Date(closingDate + " " + closingTime);
   var localeDateString = date.toLocaleString();
@@ -59,18 +59,21 @@ router.post('/confirm-update', authenticated, function(req,res) {
 
         closeRepositories(action, orgName, repoName, apiKey);
         ScheduledRepoClosing.find({_id: objectID}).remove().exec();
+
       }.bind(null, doc._id, 'close', organizationName, homeworkName, apiKey));
 
       console.log('node-schedule job successfully rescheduled');
     } else {
       console.log("couldn't reschedule job; job is " + job);
     }
+
+    // message for UI
     var message = {};
     message["title"] = "Update Complete.";
     var messageBody = "The repositories for " + homeworkName + " are now set to close on " + dateTokenized[0] + " at " + dateTokenized[1] + ".";
     message["body"] = messageBody;
-    
     req.session.message = message;
+
     res.redirect('/scheduled/view');
   });
 });
@@ -86,6 +89,7 @@ router.post('/confirm-delete', authenticated, function(req,res) {
 
     var jobNameString = "job-id:" + scheduledRepoClosingID;
     var job = schedule.scheduledJobs[jobNameString];
+
     if(job) {
       job.cancel();
       console.log('node-schedule job successfully cancelled');
@@ -93,12 +97,13 @@ router.post('/confirm-delete', authenticated, function(req,res) {
       console.log("couldn't cancel scheduled job; job is " + job);
     }
 
+    // message for UI
     var message = {};
     message["title"] = "Delete Complete";
     var messageBody = "The scheduled job to close the repository has been removed.";
     message["body"] = messageBody;
-
     req.session.message = message;
+
     res.redirect('/scheduled/view');
   } else {
     res.redirect('/scheduled/delete');
