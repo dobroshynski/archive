@@ -6,17 +6,17 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "aws-sdk": "^2.92.0",
+    "aws-sdk": "^2.377.0",
     "body-parser": "~1.17.1",
     "cookie-parser": "~1.4.3",
-    "debug": "~2.6.3",
+    "debug": "^2.6.9",
     "dotenv": "^4.0.0",
-    "express": "~4.15.2",
+    "express": "^4.15.5",
     "hbs": "~4.0.1",
     "morgan": "~1.8.1",
-    "phantomjs-prebuilt": "^2.1.14",
-    "q": "^1.5.0",
-    "request": "^2.81.0",
-    "serve-favicon": "~2.4.2"
+    "phantomjs-prebuilt": "^2.1.16",
+    "q": "^1.5.1",
+    "request": "^2.88.0",
+    "serve-favicon": "^2.4.5"
   }
 }
