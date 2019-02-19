@@ -6,20 +6,20 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "bluebird": "^3.5.0",
+    "bluebird": "^3.5.3",
     "body-parser": "~1.17.1",
-    "cookie-parser": "~1.4.3",
-    "debug": "~2.6.3",
+    "cookie-parser": "^1.4.4",
+    "debug": "^2.6.9",
     "dotenv": "^4.0.0",
-    "express": "~4.15.2",
+    "express": "^4.15.5",
     "fs": "0.0.1-security",
-    "hbs": "~4.0.1",
+    "hbs": "^4.0.2",
     "line-reader": "^0.4.0",
     "morgan": "~1.8.1",
-    "ngrok": "^2.2.14",
+    "ngrok": "^2.3.0",
     "path": "^0.12.7",
-    "request": "^2.81.0",
-    "serve-favicon": "~2.4.2",
+    "request": "^2.88.0",
+    "serve-favicon": "^2.4.5",
     "slack-node": "^0.1.8"
   }
 }
