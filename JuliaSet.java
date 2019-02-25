@@ -3,6 +3,15 @@ import java.awt.image.BufferedImage;
 import javax.swing.*;
 import java.awt.event.*;
 
+//
+// Class to plot a [Julia Set](https://en.wikipedia.org/wiki/Julia_set) with custom parameters a & b in format fc
+// of a complext number, c = a + bi, compile and run:
+//  $ javac JuliaSet.java
+//  $ java JuliaSet a b
+// can also run with no custom initialization:
+//  $ javac JuliaSet.java
+//  $ java JuliaSet
+//
 public class JuliaSet extends JPanel implements MouseMotionListener, MouseListener, MouseWheelListener {
     private final int maxIter = 100;
     private static double zoom = 1;
@@ -21,6 +30,7 @@ public class JuliaSet extends JPanel implements MouseMotionListener, MouseListen
 
     private static JFrame f;
 
+    // interactive bar parameters
     private static JPanel panel;
     private static JLabel equationLabel;
     private static JLabel aLabel;
@@ -37,6 +47,9 @@ public class JuliaSet extends JPanel implements MouseMotionListener, MouseListen
       repaint();
     }
 
+    // zoom control for looking at fractal
+    // the method processes the mouse or trackpad input
+    // and scales it before mapping to a fractal zoom parameter
     public void mouseWheelMoved(MouseWheelEvent e) {
       if(debug) {
         System.out.println("scrolled: " + e.getUnitsToScroll());
@@ -52,6 +65,9 @@ public class JuliaSet extends JPanel implements MouseMotionListener, MouseListen
       updateFrame();
     }
 
+    // drag release control for looking at fractal
+    // the method processes the mouse or trackpad input
+    // and scales fractal generation offset to "move" with the frame
     public void mouseReleased(MouseEvent e) {
       if(debug) {
         System.out.println("mouse released @ point [" + e.getX() + ", " + e.getY() + "]");
@@ -109,16 +125,22 @@ public class JuliaSet extends JPanel implements MouseMotionListener, MouseListen
         this.addMouseListener(this);
     }
 
-    void drawJuliaSet(Graphics2D g) {
+    // draw the Julia set by writing to a buffer
+    // and sequentially setting RGB values for visual
+    // representation; finally render the complete image on a
+    // 2D canvas
+    private void drawJuliaSet(Graphics2D g) {
         int w = getWidth();
         int h = getHeight();
         BufferedImage image = new BufferedImage(w, h,
                 BufferedImage.TYPE_INT_RGB);
 
+          // account for offset based on user's dragging of frame
           double moveX = dxOffset + offsetX;
           double moveY = dyOffset + offsetY;
           double zx, zy;
 
+          // iterate implicit 2D grid
           for (int x = 0; x < w; x++) {
               for (int y = 0; y < h; y++) {
                   zx = 1.5 * (x - w / 2) / (0.5 * zoom * w) + moveX;
@@ -183,11 +205,13 @@ public class JuliaSet extends JPanel implements MouseMotionListener, MouseListen
       bLabel = new JLabel("b:");
       bField = new JTextField(4);
 
+      // render the new equation for UX purposes
       equationDisplay = new JLabel("[c = " + cX + " + " + cY + "i]");
       equationDisplay.setFont(equationDisplay.getFont().deriveFont(equationDisplay.getFont().getStyle() ^ Font.BOLD));
 
       updateEquationButton = new JButton("Update");
 
+      // if updating equation, automatically reset to a new drawing based on new parameters
       updateEquationButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e){
           resetFrame();
@@ -203,6 +227,7 @@ public class JuliaSet extends JPanel implements MouseMotionListener, MouseListen
       panel.add(equationDisplay);
     }
 
+    // utility set-up for JFrame, UI, command line argument parsing
     public static void main(String[] args) {
       SwingUtilities.invokeLater(() -> {
           f = new JFrame();
@@ -211,10 +236,12 @@ public class JuliaSet extends JPanel implements MouseMotionListener, MouseListen
           f.setTitle("Java Fractals");
           f.setResizable(false);
 
-          // set to have some default
+          // set to have some default in case no custom equation is provided
+          // at run time
           double a = -0.61803398875;
           double b = 0.0;
 
+          // attempt to parse command line arguments
           if(args.length == 2) {
             try {
               a = Double.parseDouble(args[0]);
@@ -224,6 +251,7 @@ public class JuliaSet extends JPanel implements MouseMotionListener, MouseListen
             }
           }
 
+          // set up JFrame
           f.add(new JuliaSet(a,b), BorderLayout.CENTER);
 
           f.pack();
