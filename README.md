@@ -1,6 +1,9 @@
 # Repo Closer
 Bulk close and manage GitHub repositories for your organizations.
 
+![screenshot1](img/img1.png)
+![screenshot2](img/img2.png)
+
 # Setup
 - clone the repository, `cd` into `repo-closer` and `$ npm install`
 - create a `students` file with no extension that will be used to close the repositories
