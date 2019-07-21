@@ -13,7 +13,7 @@
     "fs": "0.0.1-security",
     "hbs": "~4.0.1",
     "morgan": ">=1.9.1",
-    "ngrok": "^2.2.14",
+    "ngrok": "^3.2.3",
     "path": "^0.12.7",
     "request": "^2.81.0",
     "serve-favicon": "~2.4.2",
