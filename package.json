@@ -14,7 +14,7 @@
     "express": "^4.17.1",
     "handlebars": ">=4.1.0",
     "morgan": ">=1.9.1",
-    "npm": "^6.11.2",
+    "npm": "^6.11.3",
     "phantomjs-prebuilt": "^2.1.16",
     "q": "^1.5.1",
     "request": "^2.88.0",
