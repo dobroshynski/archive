@@ -15,7 +15,7 @@
     "handlebars": ">=4.5.1",
     "morgan": ">=1.9.1",
     "ngrok": "^3.2.5",
-    "npm": "^6.13.0",
+    "npm": "^6.13.4",
     "request": "^2.88.0",
     "serve-favicon": "^2.5.0"
   }
