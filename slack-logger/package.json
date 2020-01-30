@@ -14,7 +14,7 @@
     "express": "^4.17.1",
     "handlebars": ">=4.7.2",
     "morgan": ">=1.9.1",
-    "ngrok": "^3.2.5",
+    "ngrok": "^3.2.7",
     "npm": "^6.13.7",
     "request": "^2.88.0",
     "serve-favicon": "^2.5.0"
