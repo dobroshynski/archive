@@ -14,7 +14,7 @@
     "express": "^4.17.1",
     "extend": ">=3.0.2",
     "fs": "0.0.1-security",
-    "handlebars": ">=4.7.3",
+    "handlebars": ">=4.7.5",
     "line-reader": "^0.4.0",
     "minimist": ">=1.2.2",
     "morgan": ">=1.9.1",
