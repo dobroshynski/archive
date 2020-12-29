@@ -1,0 +1,184 @@
+<!-- script automatically loaded and executed to generate the meme -->
+<html>
+<header>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+</header>
+
+<body>
+  <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+  <script>
+  WebFont.load({
+    google: {
+      families: ['Roboto']
+    }
+  });
+  </script>
+
+  <canvas id="canvas"></canvas>
+  <div class="userID" id="{{id}}"> </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", main);
+
+    function handleServerResponse() {
+      if(this.responseText) {
+        console.log(this.responseText);
+      }
+    }
+
+    function handleError() {
+      console.log("ERROR WITH AJAX CALL");
+    }
+
+    function wrapText(context, text, x, y, maxWidth, spacing) {
+      var words = text.split(' ');
+      var line = '';
+
+      for(var n = 0; n < words.length; n++) {
+        var testLine = line + words[n] + ' ';
+        var metrics = context.measureText(testLine);
+        var testWidth = metrics.width;
+        if(testWidth > maxWidth && n > 0) {
+          context.fillText(line, x, y);
+          line = words[n] + ' ';
+          y += spacing;
+        } else {
+          line = testLine;
+        }
+      }
+      context.fillText(line, x, y);
+    }
+
+    function calculateFontForCharacters(numberOfCharacters) {
+      var scale = 1.1;
+      return 190 * Math.pow(numberOfCharacters, -0.4432) * scale;
+    }
+
+    function isUpperCase(str) {
+      return str === str.toUpperCase();
+    }
+
+    function isOneWord(str) {
+      var words = str.trim().split(" ");
+      return words.length === 1 ? true : false;
+    }
+
+    function handleData() {
+      var parsed = JSON.parse(this.responseText);
+      var paragraphList = parsed.list;
+
+      var userID = parsed.id;
+
+      var text = paragraphList[0];
+      var text2 = paragraphList[1];
+      var text3 = paragraphList[2];
+
+      var canvas = document.getElementById('canvas');
+      var ctx = canvas.getContext('2d');
+
+      canvas.width = 678;
+      canvas.height = 704;
+
+      var img = new Image();
+      img.src = '/images/meme-template-3.jpg';
+
+      img.onload = function(){
+        ctx.drawImage(img,0,0);
+
+        // fill in the image with text and align
+        var maxWidth = 320;
+        var xOffset = 10;
+
+        var textBox1Height = 10;
+        var textBox2Height = 250;
+        var textBox3Height = 495;
+
+        ctx.textBaseline = "top";
+
+        // blurb 1 calculations
+        var numberOfCharacters = text.length;
+        var fontCalculation = calculateFontForCharacters(numberOfCharacters) * 0.8;
+        var spacingCalculation = fontCalculation * 1.5;
+
+        ctx.font = '' + fontCalculation + 'pt Roboto';
+
+        // adjust font calculation for text1 to not overflow if large word
+        if(isOneWord(text) && ctx.measureText(text).width > maxWidth) {
+          var length = ctx.measureText(text).width;
+          while(length > maxWidth) {
+            fontCalculation -= 1;
+            ctx.font = '' + fontCalculation + 'pt Roboto';
+            length = ctx.measureText(text).width;
+          }
+        }
+
+        var x1 = isUpperCase(text) ? 1 : xOffset;
+        var y1 = textBox1Height;
+        wrapText(ctx, text, x1, y1, maxWidth, spacingCalculation);
+
+        // blurb 2 calculations
+        numberOfCharacters = text2.length;
+        fontCalculation = calculateFontForCharacters(numberOfCharacters) * 0.8;
+        spacingCalculation = fontCalculation * 1.5;
+
+        ctx.font = '' + fontCalculation + 'pt Roboto';
+
+        // adjust font calculation for text2 to not overflow if large word
+        if(isOneWord(text2) && ctx.measureText(text2).width > maxWidth) {
+          var length = ctx.measureText(text2).width;
+          while(length > maxWidth) {
+            fontCalculation -= 1;
+            ctx.font = '' + fontCalculation + 'pt Roboto';
+            length = ctx.measureText(text2).width;
+          }
+        }
+
+        var x2 = isUpperCase(text2) ? 1 : xOffset;;
+        var y2 = textBox2Height;
+        wrapText(ctx, text2, x2, y2, maxWidth, spacingCalculation);
+
+        // blurb 3 calculations
+        numberOfCharacters = text3.length;
+        fontCalculation = calculateFontForCharacters(numberOfCharacters) * 0.8;
+        spacingCalculation = fontCalculation * 1.5;
+
+        ctx.font = '' + fontCalculation + 'pt Roboto';
+
+        // adjust font calculation for text3 to not overflow if large word
+        if(isOneWord(text3) && ctx.measureText(text3).width > maxWidth) {
+          var length = ctx.measureText(text3).width;
+          while(length > maxWidth) {
+            fontCalculation -= 1;
+            ctx.font = '' + fontCalculation + 'pt Roboto';
+            length = ctx.measureText(text3).width;
+          }
+        }
+
+        var x3 = isUpperCase(text3) ? 1 : xOffset;;
+        var y3 = textBox3Height;
+        wrapText(ctx, text3, x3, y3, maxWidth, spacingCalculation);
+
+        var imageBufferedData = document.getElementById("canvas").toDataURL();
+
+        // AJAX call with JQuery to send the image data to server
+        (function($) {
+          var data = {};
+          data.data = imageBufferedData;
+
+          $.post(('/handle/image/data/' + userID), data, handleServerResponse);
+        })(jQuery);
+      };
+    }
+
+    function main() {
+      var userID = document.getElementsByClassName("userID")[0].id;
+      var req = new XMLHttpRequest();
+  		var url = "/get/data/" + userID;
+  		req.open('GET',url,true);
+  		req.addEventListener('load',handleData);
+  		req.addEventListener('error',handleError);
+  		req.send();
+    }
+  </script>
+</body>
+</html>
