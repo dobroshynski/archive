@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Repo Closer</title>
+  <script src="https://use.fontawesome.com/ac6e918b68.js"></script>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+  <div class="container">
+    <div class="top-buttons">
+      <a href="/new">
+      <div class="white-button spaced">
+        <button type="button">New</button>
+      </div>
+      </a>
+      <span class="separator-button"></span>
+      <a href="/scheduled/view">
+      <div class="white-button spaced">
+        <button type="button">Scheduled</button>
+      </div>
+      </a>
+      <span class="separator-button"></span>
+      <a href="/settings">
+      <div class="white-button spaced">
+        <button type="button">Settings</button>
+      </div>
+      </a>
+      <span class="separator-button"></span>
+      <a href="/logout">
+      <div class="white-button spaced">
+        <button type="button">Logout <i class="fa fa-sign-out" aria-hidden="true"></i> </button>
+      </div>
+      </a>
+    </div>
+    {{#if shouldDisplayMessage}}
+    <div class="message">
+      <h1 class="heading">
+        {{message.title}}
+        <br/><i class="checkmark fa fa-check-circle-o" aria-hidden="true"></i>
+      </h1>
+      <h2 class="sub-heading">
+        {{message.body}}
+      </h2>
+    </div>
+    {{/if}}
+    <div class="top-spacer"></div>
+    {{#if isNotEmpty}}
+    <div class="wrapper-transparent">
+      Scheduled repo closings
+    </div>
+    <div class="separator"></div>
+    <hr class="hr-separator"/>
+    {{else}}
+    <div class="separator"></div>
+    <div class="centered-wrapper">
+      No scheduled repo closings
+    </div>
+    {{/if}}
+    {{#each schedules as |singleSchedule|}}
+    <div class="wrapper-scheduled-list">
+      <div class="scheduled-summary stretched-wrapper">
+        <div class="info padded-double"> <i class="fa fa-github fa-small" aria-hidden="true"></i> <span class="view-scheduled"> {{singleSchedule.organizationName}} </span></div>
+        <hr>
+        <div class="info padded-double"> <i class="fa fa-folder fa-small" aria-hidden="true"></i> <span class="view-scheduled"> {{singleSchedule.homeworkName}} </span></div>
+        <hr>
+        <div class="info padded-double"> <i class="fa fa-clock-o fa-small" aria-hidden="true"></i> <span class="view-scheduled"> {{singleSchedule.closingDateTime}} </span></div>
+      </div>
+    </div>
+
+    <div class="edit-buttons-wrapper">
+      <a href="/scheduled/edit/{{singleSchedule.id}}"><div class="edit-buttons">Edit</div></a>
+      <div class="edit-buttons-separator"></div>
+      <form method="POST" action="/confirm-delete" onsubmit="return confirm('Delete this scheduled repo closing?');">
+          <input id="repoClosingScheduleIdentifier" type="hidden" name="repoClosingScheduleIdentifier" value="{{singleSchedule.id}}">
+          <button class="edit-buttons delete-post" type="submit">Delete</button>
+      </form>
+    </div>
+    <div class="separator"></div>
+    <hr class="hr-separator"/>
+    {{/each}}
+    <div class="separator"></div>
+    <div class="spacer"></div>
+  </div>
+</body>
+</html>

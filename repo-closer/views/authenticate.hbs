@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Repo Closer</title>
+  <script src="https://use.fontawesome.com/ac6e918b68.js"></script>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+  <form method="POST" action="/authenticate">
+  <div class="container">
+    <h1 class="heading">
+      Repo Closer
+    </h1>
+    <div class="top-spacer"></div>
+    {{#if shouldDisplayError}}
+    <div class="wrapper-transparent-error-message">
+      Error: Invalid Key
+    </div>
+    {{/if}}
+    <div class="wrapper-transparent">
+      Please enter your API token to authenticate:
+    </div>
+    <div class="wrapper">
+      <input class="" type="password" name="apikey" placeholder="Key" required></input>
+      <button type="button"><i class="fa fa-lock" aria-hidden="true"></i></button>
+    </div>
+    <div class="separator"></div>
+    <div class="submit-button">
+      <button type="submit"><i class="icon fa fa-arrow-right" aria-hidden="true"></i></button>
+    </div>
+    <div class="spacer"></div>
+  </div>
+  </form>
+</body>
+</html>
